@@ -81,84 +81,119 @@ class SettingsScreen extends StatelessWidget {
           maxChildSize: 0.9,
           expand: false,
           builder: (context, scrollController) {
-            return StatefulBuilder(
-                builder: (context, setState) {
-                  final Map<String, String> languages = {...languageProvider.supportedLanguages};
-                  TextEditingController searchController = TextEditingController();
-                  Map<String, String> filteredLanguages = languages;
-
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text(
-                          isSource ? 'Select Source Language' : 'Select Target Language',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: searchController,
-                          decoration: const InputDecoration(
-                            labelText: 'Search Language',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              if (value.isEmpty) {
-                                filteredLanguages = languages;
-                              } else {
-                                filteredLanguages = Map.fromEntries(
-                                    languages.entries.where((entry) =>
-                                        entry.value.toLowerCase().contains(value.toLowerCase()))
-                                );
-                              }
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        Expanded(
-                          child: ListView.builder(
-                            controller: scrollController,
-                            itemCount: filteredLanguages.length,
-                            itemBuilder: (context, index) {
-                              final languageCode = filteredLanguages.keys.elementAt(index);
-                              final languageName = filteredLanguages.values.elementAt(index);
-
-                              // Skip "auto" option for target language
-                              if (!isSource && languageCode == 'auto') {
-                                return const SizedBox.shrink();
-                              }
-
-                              return ListTile(
-                                title: Text(languageName),
-                                trailing: (isSource && languageCode == languageProvider.sourceLanguage) ||
-                                    (!isSource && languageCode == languageProvider.targetLanguage)
-                                    ? const Icon(Icons.check, color: Colors.blue)
-                                    : null,
-                                onTap: () {
-                                  if (isSource) {
-                                    languageProvider.setSourceLanguage(languageCode);
-                                  } else {
-                                    languageProvider.setTargetLanguage(languageCode);
-                                  }
-                                  Navigator.pop(context);
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+            return _LanguageSelectorSheet(
+              scrollController: scrollController,
+              languageProvider: languageProvider,
+              isSource: isSource,
             );
           },
         );
       },
+    );
+  }
+}
+
+// Extraction du widget dans une classe StatefulWidget séparée
+class _LanguageSelectorSheet extends StatefulWidget {
+  final ScrollController scrollController;
+  final LanguageProvider languageProvider;
+  final bool isSource;
+
+  const _LanguageSelectorSheet({
+    required this.scrollController,
+    required this.languageProvider,
+    required this.isSource,
+  });
+
+  @override
+  _LanguageSelectorSheetState createState() => _LanguageSelectorSheetState();
+}
+
+class _LanguageSelectorSheetState extends State<_LanguageSelectorSheet> {
+  late TextEditingController searchController;
+  late Map<String, String> filteredLanguages;
+
+  @override
+  void initState() {
+    super.initState();
+    searchController = TextEditingController();
+    filteredLanguages = {...widget.languageProvider.supportedLanguages};
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Text(
+            widget.isSource ? 'Select Source Language' : 'Select Target Language',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: searchController,
+            decoration: const InputDecoration(
+              labelText: 'Search Language',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              setState(() {
+                if (value.isEmpty) {
+                  filteredLanguages = {...widget.languageProvider.supportedLanguages};
+                } else {
+                  filteredLanguages = Map.fromEntries(
+                      widget.languageProvider.supportedLanguages.entries.where((entry) =>
+                          entry.value.toLowerCase().contains(value.toLowerCase()))
+                  );
+                }
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: ListView.builder(
+              controller: widget.scrollController,
+              itemCount: filteredLanguages.length,
+              itemBuilder: (context, index) {
+                final languageCode = filteredLanguages.keys.elementAt(index);
+                final languageName = filteredLanguages.values.elementAt(index);
+
+                // Skip "auto" option for target language
+                if (!widget.isSource && languageCode == 'auto') {
+                  return const SizedBox.shrink();
+                }
+
+                return ListTile(
+                  title: Text(languageName),
+                  trailing: (widget.isSource && languageCode == widget.languageProvider.sourceLanguage) ||
+                      (!widget.isSource && languageCode == widget.languageProvider.targetLanguage)
+                      ? const Icon(Icons.check, color: Colors.blue)
+                      : null,
+                  onTap: () {
+                    if (widget.isSource) {
+                      widget.languageProvider.setSourceLanguage(languageCode);
+                    } else {
+                      widget.languageProvider.setTargetLanguage(languageCode);
+                    }
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

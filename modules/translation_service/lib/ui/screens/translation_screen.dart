@@ -30,7 +30,7 @@ class _TranslationScreenState extends State<TranslationScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final translationProvider =
-        Provider.of<TranslationProvider>(context, listen: false);
+    Provider.of<TranslationProvider>(context, listen: false);
 
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
@@ -43,15 +43,24 @@ class _TranslationScreenState extends State<TranslationScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Camera Translator', style: TextStyle(fontSize: 18),),
+        title: const Text('Camera Translator', style: TextStyle(fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              // Navigation vers l'écran des paramètres
+              await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
+
+              // Forcer une vérification de changement de langue après le retour
+              if (mounted) {
+                final translationProvider = Provider.of<TranslationProvider>(context, listen: false);
+                final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+                translationProvider.checkLanguageChange(languageProvider.targetLanguage);
+                setState(() {}); // Rafraîchir l'UI
+              }
             },
           ),
           IconButton(
@@ -62,6 +71,9 @@ class _TranslationScreenState extends State<TranslationScreen>
       ),
       body: Consumer2<TranslationProvider, LanguageProvider>(
         builder: (context, translationProvider, languageProvider, child) {
+          // Vérifier si la langue a changé à chaque build
+          translationProvider.checkLanguageChange(languageProvider.targetLanguage);
+
           if (translationProvider.status == TranslationStatus.initializing) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -90,6 +102,22 @@ class _TranslationScreenState extends State<TranslationScreen>
                 CameraPreview(translationProvider.cameraController!),
               TranslationOverlay(
                   translations: translationProvider.detectedTexts),
+              // Afficher la langue cible actuelle
+              Positioned(
+                top: 16,
+                left: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    'Target: ${languageProvider.supportedLanguages[languageProvider.targetLanguage] ?? 'Unknown'}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
             ],
           );
         },
@@ -98,18 +126,13 @@ class _TranslationScreenState extends State<TranslationScreen>
         builder: (context, translationProvider, languageProvider, _) {
           return FloatingActionButton(
             onPressed: () {
-              translationProvider.captureAndTranslate(
-                languageProvider.isAutomaticDetection
-                    ? 'auto'
-                    : languageProvider.sourceLanguage,
-                languageProvider.targetLanguage,
-              );
+              translationProvider.captureAndTranslate(context);
             },
             child: translationProvider.status == TranslationStatus.processing
                 ? const CircularProgressIndicator(color: Colors.white)
                 : translationProvider.detectedTexts.isEmpty
-                    ? const Icon(Icons.translate)
-                    : const Icon(Icons.cleaning_services),
+                ? const Icon(Icons.translate)
+                : const Icon(Icons.cleaning_services),
             tooltip: translationProvider.detectedTexts.isEmpty
                 ? 'Translate'
                 : 'Clear and translate again',

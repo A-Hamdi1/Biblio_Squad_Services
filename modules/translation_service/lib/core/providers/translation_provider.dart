@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:provider/provider.dart';
 import '../services/translation_services.dart';
+import 'language_provider.dart';
 
 enum TranslationStatus { initializing, ready, processing, error }
 
 class TranslationProvider extends ChangeNotifier {
   final TranslationServices _translationService;
-
   CameraController? _cameraController;
   TranslationStatus _status = TranslationStatus.initializing;
   Map<String, String> _detectedTexts = {};
   String? _errorMessage;
+  String _currentTargetLanguage = '';  // Garde en mémoire la langue cible actuelle
 
   CameraController? get cameraController => _cameraController;
   TranslationStatus get status => _status;
@@ -50,11 +52,18 @@ class TranslationProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> captureAndTranslate(String sourceLanguage, String targetLanguage) async {
+  Future<void> captureAndTranslate(BuildContext context) async {
     if (_status == TranslationStatus.processing || _cameraController == null) return;
 
-    // Clear previous translations if operation is in progress
-    if (_detectedTexts.isNotEmpty) {
+    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    final targetLanguage = languageProvider.targetLanguage;
+
+    // Vérifier si la langue cible a changé
+    bool languageChanged = _currentTargetLanguage != targetLanguage;
+    _currentTargetLanguage = targetLanguage;
+
+    // Clear previous translations if operation is in progress or language changed
+    if (_detectedTexts.isNotEmpty && !languageChanged) {
       _detectedTexts = {};
       notifyListeners();
       return;
@@ -64,6 +73,8 @@ class TranslationProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      final sourceLanguage = languageProvider.isAutomaticDetection ? 'auto' : languageProvider.sourceLanguage;
+
       final imageFile = await _cameraController!.takePicture();
       final recognizedText = await _translationService.processImage(imageFile);
 
@@ -93,6 +104,19 @@ class TranslationProvider extends ChangeNotifier {
       _errorMessage = 'Error processing image: ${e.toString()}';
     } finally {
       notifyListeners();
+    }
+  }
+
+  // Méthode pour vérifier et réagir aux changements de langue
+  void checkLanguageChange(String currentTargetLanguage) {
+    if (_currentTargetLanguage != '' && _currentTargetLanguage != currentTargetLanguage) {
+      // La langue a changé, effacer les traductions existantes
+      _detectedTexts = {};
+      _currentTargetLanguage = currentTargetLanguage;
+      notifyListeners();
+    } else if (_currentTargetLanguage == '') {
+      // Première initialisation
+      _currentTargetLanguage = currentTargetLanguage;
     }
   }
 
