@@ -1,4 +1,5 @@
 import 'package:barcode_service/barcode_service.dart';
+import 'package:document_scan_service/document_scan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:ocr_service/ocr_service.dart';
 import 'package:translation_service/translation_service.dart';
@@ -45,7 +46,15 @@ class HomePage extends StatelessWidget {
               BarcodeService.navigateToBarcodeScanScreen(context);
             },
           ),
-          // Ajoute les autres services ici
+          _buildServiceIcon(
+            context,
+            icon: Icons.translate,
+            label: 'Document Scanner',
+            onTap: () {
+              // TODO: Naviguer vers le module de Barcode Scanner
+              DocumentScanService.navigateToHomeScreen(context);
+            },
+          ),
         ],
       ),
     );

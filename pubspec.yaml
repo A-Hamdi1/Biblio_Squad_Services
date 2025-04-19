@@ -22,7 +22,8 @@ dependencies:
     path: modules/translation_service
   barcode_service:
     path: modules/barcode_service
-
+  document_scan_service:
+    path: modules/document_scan_service
 
 dev_dependencies:
   flutter_test:
