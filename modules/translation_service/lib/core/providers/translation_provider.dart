@@ -107,16 +107,28 @@ class TranslationProvider extends ChangeNotifier {
     }
   }
 
-  // Méthode pour vérifier et réagir aux changements de langue
-  void checkLanguageChange(String currentTargetLanguage) {
+  // Version corrigée de la méthode checkLanguageChange
+  // Ne modifie l'état que si nécessaire et retourne un boolean pour indiquer si un changement a été effectué
+  bool checkLanguageChange(String currentTargetLanguage) {
+    bool changed = false;
+
     if (_currentTargetLanguage != '' && _currentTargetLanguage != currentTargetLanguage) {
       // La langue a changé, effacer les traductions existantes
       _detectedTexts = {};
       _currentTargetLanguage = currentTargetLanguage;
-      notifyListeners();
+      changed = true;
     } else if (_currentTargetLanguage == '') {
       // Première initialisation
       _currentTargetLanguage = currentTargetLanguage;
+    }
+
+    return changed;
+  }
+
+  // Nouvelle méthode à appeler après le build
+  void applyLanguageChange(String currentTargetLanguage) {
+    if (checkLanguageChange(currentTargetLanguage)) {
+      notifyListeners();
     }
   }
 
