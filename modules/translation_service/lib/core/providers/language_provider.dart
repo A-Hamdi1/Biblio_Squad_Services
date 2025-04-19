@@ -10,7 +10,6 @@ class LanguageProvider extends ChangeNotifier {
   String get targetLanguage => _targetLanguage;
   bool get isAutomaticDetection => _isAutomaticDetection;
 
-  // Liste élargie des langues supportées
   final Map<String, String> supportedLanguages = {
     'auto': 'Detect Language',
     'af': 'Afrikaans',

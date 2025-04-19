@@ -13,7 +13,7 @@ class TranslationProvider extends ChangeNotifier {
   TranslationStatus _status = TranslationStatus.initializing;
   Map<String, String> _detectedTexts = {};
   String? _errorMessage;
-  String _currentTargetLanguage = '';  // Garde en mémoire la langue cible actuelle
+  String _currentTargetLanguage = '';
 
   CameraController? get cameraController => _cameraController;
   TranslationStatus get status => _status;
@@ -58,11 +58,9 @@ class TranslationProvider extends ChangeNotifier {
     final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     final targetLanguage = languageProvider.targetLanguage;
 
-    // Vérifier si la langue cible a changé
     bool languageChanged = _currentTargetLanguage != targetLanguage;
     _currentTargetLanguage = targetLanguage;
 
-    // Clear previous translations if operation is in progress or language changed
     if (_detectedTexts.isNotEmpty && !languageChanged) {
       _detectedTexts = {};
       notifyListeners();
@@ -107,25 +105,20 @@ class TranslationProvider extends ChangeNotifier {
     }
   }
 
-  // Version corrigée de la méthode checkLanguageChange
-  // Ne modifie l'état que si nécessaire et retourne un boolean pour indiquer si un changement a été effectué
   bool checkLanguageChange(String currentTargetLanguage) {
     bool changed = false;
 
     if (_currentTargetLanguage != '' && _currentTargetLanguage != currentTargetLanguage) {
-      // La langue a changé, effacer les traductions existantes
       _detectedTexts = {};
       _currentTargetLanguage = currentTargetLanguage;
       changed = true;
     } else if (_currentTargetLanguage == '') {
-      // Première initialisation
       _currentTargetLanguage = currentTargetLanguage;
     }
 
     return changed;
   }
 
-  // Nouvelle méthode à appeler après le build
   void applyLanguageChange(String currentTargetLanguage) {
     if (checkLanguageChange(currentTargetLanguage)) {
       notifyListeners();

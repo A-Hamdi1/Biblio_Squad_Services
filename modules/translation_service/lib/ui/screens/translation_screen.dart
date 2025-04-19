@@ -19,7 +19,6 @@ class _TranslationScreenState extends State<TranslationScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Ajouter un callback pour mettre à jour après le build initial
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final translationProvider = Provider.of<TranslationProvider>(context, listen: false);
@@ -42,7 +41,6 @@ class _TranslationScreenState extends State<TranslationScreen>
 
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
-      // App is in background
       translationProvider.dispose();
     }
   }
@@ -56,13 +54,11 @@ class _TranslationScreenState extends State<TranslationScreen>
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () async {
-              // Navigation vers l'écran des paramètres
               await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
 
-              // Appliquer les changements de langue après le retour (hors de la phase de build)
               if (mounted) {
                 final translationProvider = Provider.of<TranslationProvider>(context, listen: false);
                 final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
@@ -78,10 +74,8 @@ class _TranslationScreenState extends State<TranslationScreen>
       ),
       body: Consumer2<TranslationProvider, LanguageProvider>(
         builder: (context, translationProvider, languageProvider, child) {
-          // Vérifier mais ne pas modifier pendant le build
           translationProvider.checkLanguageChange(languageProvider.targetLanguage);
 
-          // Planifier une mise à jour après le build si nécessaire
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               translationProvider.applyLanguageChange(languageProvider.targetLanguage);
@@ -116,7 +110,6 @@ class _TranslationScreenState extends State<TranslationScreen>
                 CameraPreview(translationProvider.cameraController!),
               TranslationOverlay(
                   translations: translationProvider.detectedTexts),
-              // Afficher la langue cible actuelle
               Positioned(
                 top: 16,
                 left: 16,

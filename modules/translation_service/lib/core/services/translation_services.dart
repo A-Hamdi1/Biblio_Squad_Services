@@ -8,7 +8,6 @@ class TranslationServices {
   final TextRecognizer _textRecognizer = GoogleMlKit.vision.textRecognizer();
   final GoogleTranslator _translator = GoogleTranslator();
 
-  // Initialiser la caméra
   Future<List<CameraDescription>> getAvailableCameras() async {
     try {
       return await availableCameras();
@@ -28,13 +27,11 @@ class TranslationServices {
     return controller;
   }
 
-  // Capturer et analyser une image
   Future<RecognizedText> processImage(XFile imageFile) async {
     final inputImage = InputImage.fromFilePath(imageFile.path);
     return await _textRecognizer.processImage(inputImage);
   }
 
-  // Traduire un texte
   Future<String> translateText(String text, String sourceLanguage, String targetLanguage) async {
     try {
       final translation = await _translator.translate(
@@ -49,13 +46,11 @@ class TranslationServices {
     }
   }
 
-  // Demander la permission pour la caméra
   Future<bool> requestCameraPermission() async {
     final status = await Permission.camera.request();
     return status.isGranted;
   }
 
-  // Fermer les ressources
   void close() {
     _textRecognizer.close();
   }

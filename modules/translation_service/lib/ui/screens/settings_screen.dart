@@ -93,7 +93,6 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-// Extraction du widget dans une classe StatefulWidget séparée
 class _LanguageSelectorSheet extends StatefulWidget {
   final ScrollController scrollController;
   final LanguageProvider languageProvider;
@@ -169,7 +168,6 @@ class _LanguageSelectorSheetState extends State<_LanguageSelectorSheet> {
                 final languageCode = filteredLanguages.keys.elementAt(index);
                 final languageName = filteredLanguages.values.elementAt(index);
 
-                // Skip "auto" option for target language
                 if (!widget.isSource && languageCode == 'auto') {
                   return const SizedBox.shrink();
                 }
