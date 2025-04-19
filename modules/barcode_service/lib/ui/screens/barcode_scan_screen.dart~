@@ -12,7 +12,7 @@ class BarcodeScanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scan Barcode', style: TextStyle(fontSize: 18),),
+        title: const Text('Scan Barcode'),
       ),
       body: Consumer<BarcodeProvider>(
         builder: (context, provider, child) {
