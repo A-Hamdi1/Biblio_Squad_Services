@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "577345384416",
+    "project_id": "biblio-squad-e453f",
+    "storage_bucket": "biblio-squad-e453f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577345384416:android:4b35fccf35270cf3b74585",
+        "android_client_info": {
+          "package_name": "com.example.biblio_squad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAO9UVPV8t2R4qkLeRb4lPrA9wGFZ0aNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

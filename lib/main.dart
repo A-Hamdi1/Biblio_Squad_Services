@@ -1,0 +1,34 @@
+import 'package:barcode_service/barcode_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:translation_service/translation_service.dart';
+import 'features/global_providers.dart';
+import 'features/home_page.dart';
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // BarcodeService.initializeService();
+  // TranslationService.initializeService();
+  runApp(const BiblioSquadApp());
+}
+
+
+class BiblioSquadApp extends StatelessWidget {
+  const BiblioSquadApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: getGlobalProviders(),
+      child: MaterialApp(
+        title: 'Biblio Squad',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(primarySwatch: Colors.deepPurple),
+        home: const HomePage(),
+      ),
+    );
+  }
+}
