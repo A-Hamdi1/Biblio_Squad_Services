@@ -1,4 +1,3 @@
-import 'package:auth_service/auth_service.dart';
 import 'package:auth_service/core/providers/auth_provider.dart';
 import 'package:document_scan_service/ui/widgets/home_header.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -7,25 +7,32 @@ class VisionFeatures extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 0,
-          childAspectRatio: 0.80,
-        ),
-        itemCount: visionFeatures.length,
-        itemBuilder: (context, index) {
-          return CardComponent(
-            vision: visionFeatures[index],
-            onPress: () => visionFeatures[index].onPress(context),
-          );
-        },
-      ),
+    return FutureBuilder<List<VisionFeaturesModel>>(
+      future: getVisionFeatures(context),
+      builder: (context, snapshot) {
+        // Directly render the grid with available data, default to empty list
+        final features = snapshot.data ?? [];
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 0,
+              childAspectRatio: 0.80,
+            ),
+            itemCount: features.length,
+            itemBuilder: (context, index) {
+              return CardComponent(
+                vision: features[index],
+                onPress: () => features[index].onPress(context),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
