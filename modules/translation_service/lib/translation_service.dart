@@ -1,37 +1,45 @@
 library translation_service;
 
-// Export models et screens
-export 'ui/screens/settings_screen.dart';
-export 'core/providers/language_provider.dart';
+// Export models
+export 'models/translation_model.dart';
+
+// Export screens
+export 'ui/screens/translation_screen.dart';
+
+// Export APIs
+export 'apis/recognition_api.dart';
+export 'apis/translation_api.dart';
 
 // Main service
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'core/providers/translation_providers.dart';
+import 'core/providers/translation_provider.dart';
 import 'ui/screens/translation_screen.dart';
 
-/// TranslationService est le point d'entrée principal pour utiliser le module de traduction.
+/// TranslationService is the main entry point for the text recognition and translation module.
 class TranslationService {
   static void initializeService() async {
-    // Initialisation du service si nécessaire
+    WidgetsFlutterBinding.ensureInitialized();
   }
 
-  /// Naviguer vers l'écran principal de traduction depuis n'importe quel contexte
+  /// Navigate to the translation screen from any context
   static void navigateToTranslationScreen(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => MultiProvider(
-          providers: TranslationProviders.providers,
+          providers: getProviders(),
           child: const TranslationScreen(),
         ),
       ),
     );
   }
 
-  /// Obtenir les providers nécessaires pour ce module
+  /// Get the providers required for this module
   static List<SingleChildWidget> getProviders() {
-    return TranslationProviders.providers;
+    return [
+      ChangeNotifierProvider(create: (_) => TranslationProvider()),
+    ];
   }
 }

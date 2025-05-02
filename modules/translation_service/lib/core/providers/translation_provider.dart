@@ -1,40 +1,33 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
-import 'package:provider/provider.dart';
-import '../services/translation_services.dart';
-import 'language_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mlkit_translation/google_mlkit_translation.dart';
+import '../../apis/recognition_api.dart';
+import '../../apis/translation_api.dart';
+import '../../models/translation_model.dart';
 
-enum TranslationStatus { initializing, ready, processing, error }
+enum TranslationStatus { initializing, ready, processing, completed, error }
 
 class TranslationProvider extends ChangeNotifier {
-  final TranslationServices _translationService;
   CameraController? _cameraController;
   TranslationStatus _status = TranslationStatus.initializing;
-  Map<String, String> _detectedTexts = {};
+  Translation? _currentTranslation;
   String? _errorMessage;
-  String _currentTargetLanguage = '';
+  TranslateLanguage _selectedLanguage = TranslateLanguage.english;
 
   CameraController? get cameraController => _cameraController;
   TranslationStatus get status => _status;
-  Map<String, String> get detectedTexts => _detectedTexts;
+  Translation? get currentTranslation => _currentTranslation;
   String? get errorMessage => _errorMessage;
+  TranslateLanguage get selectedLanguage => _selectedLanguage;
 
-  TranslationProvider(this._translationService) {
+  TranslationProvider() {
     _initializeCamera();
   }
 
   Future<void> _initializeCamera() async {
     try {
-      final permissionGranted = await _translationService.requestCameraPermission();
-      if (!permissionGranted) {
-        _status = TranslationStatus.error;
-        _errorMessage = 'Camera permission not granted';
-        notifyListeners();
-        return;
-      }
-
-      final cameras = await _translationService.getAvailableCameras();
+      final cameras = await availableCameras();
       if (cameras.isEmpty) {
         _status = TranslationStatus.error;
         _errorMessage = 'No cameras available';
@@ -42,7 +35,12 @@ class TranslationProvider extends ChangeNotifier {
         return;
       }
 
-      _cameraController = await _translationService.initializeCamera(cameras.first);
+      _cameraController = CameraController(
+        cameras.first,
+        ResolutionPreset.max,
+        enableAudio: false,
+      );
+      await _cameraController!.initialize();
       _status = TranslationStatus.ready;
       notifyListeners();
     } catch (e) {
@@ -52,81 +50,59 @@ class TranslationProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> captureAndTranslate(BuildContext context) async {
-    if (_status == TranslationStatus.processing || _cameraController == null) return;
+  void setSelectedLanguage(TranslateLanguage language) {
+    _selectedLanguage = language;
+    notifyListeners();
+  }
 
-    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
-    final targetLanguage = languageProvider.targetLanguage;
-
-    bool languageChanged = _currentTargetLanguage != targetLanguage;
-    _currentTargetLanguage = targetLanguage;
-
-    if (_detectedTexts.isNotEmpty && !languageChanged) {
-      _detectedTexts = {};
-      notifyListeners();
-      return;
-    }
+  Future<void> translateText() async {
+    if (_cameraController == null || _status != TranslationStatus.ready) return;
 
     _status = TranslationStatus.processing;
+    _errorMessage = null;
     notifyListeners();
 
     try {
-      final sourceLanguage = languageProvider.isAutomaticDetection ? 'auto' : languageProvider.sourceLanguage;
+      final image = await _cameraController!.takePicture();
+      final recognizedText = await RecognitionApi.recognizeText(
+        InputImage.fromFile(File(image.path)),
+      );
 
-      final imageFile = await _cameraController!.takePicture();
-      final recognizedText = await _translationService.processImage(imageFile);
-
-      if (recognizedText.text.isNotEmpty) {
-        final Map<String, String> newDetectedTexts = {};
-
-        for (final TextBlock block in recognizedText.blocks) {
-          for (final TextLine line in block.lines) {
-            if (line.text.isNotEmpty) {
-              final translation = await _translationService.translateText(
-                line.text,
-                sourceLanguage,
-                targetLanguage,
-              );
-
-              newDetectedTexts[line.text] = translation;
-            }
-          }
-        }
-
-        _detectedTexts = newDetectedTexts;
+      if (recognizedText == null || recognizedText.isEmpty) {
+        _status = TranslationStatus.error;
+        _errorMessage = 'No text recognized';
+        notifyListeners();
+        return;
       }
 
-      _status = TranslationStatus.ready;
+      final translatedText = await TranslationApi.translateText(
+        recognizedText,
+        _selectedLanguage,
+      );
+
+      if (translatedText == null) {
+        _status = TranslationStatus.error;
+        _errorMessage = 'Translation failed';
+        notifyListeners();
+        return;
+      }
+
+      _currentTranslation = Translation(
+        recognizedText: recognizedText,
+        translatedText: translatedText,
+        targetLanguage: _selectedLanguage.name,
+      );
+      _status = TranslationStatus.completed;
+      notifyListeners();
     } catch (e) {
       _status = TranslationStatus.error;
-      _errorMessage = 'Error processing image: ${e.toString()}';
-    } finally {
-      notifyListeners();
-    }
-  }
-
-  bool checkLanguageChange(String currentTargetLanguage) {
-    bool changed = false;
-
-    if (_currentTargetLanguage != '' && _currentTargetLanguage != currentTargetLanguage) {
-      _detectedTexts = {};
-      _currentTargetLanguage = currentTargetLanguage;
-      changed = true;
-    } else if (_currentTargetLanguage == '') {
-      _currentTargetLanguage = currentTargetLanguage;
-    }
-
-    return changed;
-  }
-
-  void applyLanguageChange(String currentTargetLanguage) {
-    if (checkLanguageChange(currentTargetLanguage)) {
+      _errorMessage = 'Error recognizing or translating text';
       notifyListeners();
     }
   }
 
   void reset() {
-    _detectedTexts = {};
+    _currentTranslation = null;
     _errorMessage = null;
     _status = TranslationStatus.ready;
     notifyListeners();
