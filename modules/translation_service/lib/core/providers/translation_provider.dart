@@ -56,9 +56,11 @@ class TranslationProvider extends ChangeNotifier {
   }
 
   Future<void> translateText() async {
-    if (_cameraController == null || _status != TranslationStatus.ready) return;
+    if (_cameraController == null || _status == TranslationStatus.processing)
+      return;
 
     _status = TranslationStatus.processing;
+    _currentTranslation = null;
     _errorMessage = null;
     notifyListeners();
 
@@ -94,9 +96,17 @@ class TranslationProvider extends ChangeNotifier {
       );
       _status = TranslationStatus.completed;
       notifyListeners();
+
+      // Réinitialiser pour permettre une nouvelle traduction
+      _status = TranslationStatus.ready;
+      notifyListeners();
     } catch (e) {
       _status = TranslationStatus.error;
       _errorMessage = 'Error recognizing or translating text';
+      notifyListeners();
+
+      // Réinitialiser pour permettre une nouvelle tentative
+      _status = TranslationStatus.ready;
       notifyListeners();
     }
   }
