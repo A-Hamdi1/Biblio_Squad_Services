@@ -3,22 +3,28 @@ class Assets {
   Assets._();
 
   static const String imagesBarcode = 'assets/images/barcode.png';
-  static const String imagesFaceRecognition = 'assets/images/face_recognition.png';
+  static const String imagesFaceRecognition =
+      'assets/images/face_recognition.png';
   static const String imagesFaqChat = 'assets/images/faq-chat.png';
   static const String imagesLogo = 'assets/images/logo.png';
+  static const String imagesLogout = 'assets/images/logout.svg';
   static const String imagesOcr = 'assets/images/ocr.png';
   static const String imagesScanDocument = 'assets/images/scan_document.png';
   static const String imagesSettings = 'assets/images/Settings.svg';
   static const String imagesTranslate = 'assets/images/translate.png';
   static const String muliMuli = 'assets/fonts/muli/Muli.ttf';
   static const String muliMuliBold = 'assets/fonts/muli/Muli-Bold.ttf';
-  static const String muliMuliBoldItalic = 'assets/fonts/muli/Muli-BoldItalic.ttf';
-  static const String muliMuliExtraLight = 'assets/fonts/muli/Muli-ExtraLight.ttf';
-  static const String muliMuliExtraLightItalic = 'assets/fonts/muli/Muli-ExtraLightItalic.ttf';
+  static const String muliMuliBoldItalic =
+      'assets/fonts/muli/Muli-BoldItalic.ttf';
+  static const String muliMuliExtraLight =
+      'assets/fonts/muli/Muli-ExtraLight.ttf';
+  static const String muliMuliExtraLightItalic =
+      'assets/fonts/muli/Muli-ExtraLightItalic.ttf';
   static const String muliMuliItalic = 'assets/fonts/muli/Muli-Italic.ttf';
   static const String muliMuliLight = 'assets/fonts/muli/Muli-Light.ttf';
-  static const String muliMuliLightItalic = 'assets/fonts/muli/Muli-LightItalic.ttf';
+  static const String muliMuliLightItalic =
+      'assets/fonts/muli/Muli-LightItalic.ttf';
   static const String muliMuliSemiBold = 'assets/fonts/muli/Muli-SemiBold.ttf';
-  static const String muliMuliSemiBoldItalic = 'assets/fonts/muli/Muli-Semi-BoldItalic.ttf';
-
+  static const String muliMuliSemiBoldItalic =
+      'assets/fonts/muli/Muli-Semi-BoldItalic.ttf';
 }

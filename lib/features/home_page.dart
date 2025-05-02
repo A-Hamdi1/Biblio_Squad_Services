@@ -1,7 +1,8 @@
+import 'package:auth_service/auth_service.dart';
+import 'package:auth_service/core/providers/auth_provider.dart';
 import 'package:document_scan_service/ui/widgets/home_header.dart';
 import 'package:flutter/material.dart';
-import 'package:translation_service/ui/screens/settings_screen.dart';
-
+import 'package:provider/provider.dart';
 import '../visions/vision_features .dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,13 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Column(children: [
             HomeHeader(
-              svgSrc: "assets/images/Settings.svg",
+              svgSrc: "assets/images/logout.svg",
               press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsScreen()),
-                );
+                Provider.of<AuthProvider>(context, listen: false).logout();
               },
             ),
             SizedBox(height: 50),

@@ -1,11 +1,11 @@
-import 'package:barcode_service/barcode_service.dart';
 import 'package:biblio_squad/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:translation_service/translation_service.dart';
 import 'features/global_providers.dart';
 import 'features/home_page.dart';
+import 'package:auth_service/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,19 @@ class BiblioSquadApp extends StatelessWidget {
         title: 'Biblio Squad',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme(context),
-        home: const HomeScreen(),
+        // home: const HomeScreen(),
+        home: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasData) {
+              return const HomeScreen();
+            }
+            return const LoginScreen();
+          },
+        ),
       ),
     );
   }
