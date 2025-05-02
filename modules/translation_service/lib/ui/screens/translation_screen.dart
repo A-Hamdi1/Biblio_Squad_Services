@@ -156,7 +156,7 @@ class TranslationScreen extends StatelessWidget {
                       child: FadeInUp(
                         duration: const Duration(milliseconds: 500),
                         child: GestureDetector(
-                          onTap: provider.status == TranslationStatus.processing
+                          onTap: provider.isProcessing
                               ? null
                               : provider.translateText,
                           child: Container(
@@ -165,16 +165,23 @@ class TranslationScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               gradient: LinearGradient(
-                                colors: [Color(0xFF1E88E5), Color(0xFF00BCD4)],
+                                colors: provider.isProcessing
+                                    ? [Colors.grey, Colors.grey]
+                                    : [Color(0xFF1E88E5), Color(0xFF00BCD4)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                             ),
-                            child: const Icon(
-                              Icons.translate,
-                              size: 30,
-                              color: Colors.white,
-                            ),
+                            child: provider.isProcessing
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  )
+                                : const Icon(
+                                    Icons.translate,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
                           ),
                         ),
                       ),

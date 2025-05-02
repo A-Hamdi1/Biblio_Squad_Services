@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
 import '../../models/document_model.dart';
+import '../services/text_recognition_service.dart';
+import '../services/file_export_service.dart';
 
 class DocumentProvider extends ChangeNotifier {
+  final TextRecognitionService _recognitionService = TextRecognitionService();
+  final FileExportService _exportService = FileExportService();
+
   Document? _currentDocument;
   bool _isProcessing = false;
   String _errorMessage = '';
@@ -12,39 +16,76 @@ class DocumentProvider extends ChangeNotifier {
   bool get isProcessing => _isProcessing;
   String get errorMessage => _errorMessage;
 
-  Future<void> processImage(File imageFile) async {
+  /// Process an image file to extract text
+  Future<void> processImage(File imageFile, {String? title}) async {
     _isProcessing = true;
     _errorMessage = '';
     notifyListeners();
 
-    final textRecognizer = GoogleMlKit.vision.textRecognizer();
-    final inputImage = InputImage.fromFile(imageFile);
-
     try {
-      final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
-      String extractedText = recognizedText.text;
-
-      if (extractedText.isEmpty) {
-        extractedText = "No text found";
-      }
-
-      _currentDocument = Document(
-        imagePath: imageFile.path,
-        extractedText: extractedText,
-        date: DateTime.now(),
-        title: 'Document ${DateTime.now().toIso8601String()}',
-      );
+      _currentDocument =
+          await _recognitionService.processImage(imageFile, title: title);
     } catch (e) {
       _errorMessage = "Error: Failed to recognize text";
     } finally {
-      textRecognizer.close();
       _isProcessing = false;
       notifyListeners();
     }
   }
 
+  /// Save the current document text to a file
+  Future<String?> saveTextToFile(
+      {ExportFormat format = ExportFormat.text}) async {
+    if (_currentDocument == null) {
+      _errorMessage = "No document to save";
+      notifyListeners();
+      return null;
+    }
+
+    try {
+      final filename = "document_${DateTime.now().millisecondsSinceEpoch}";
+      final filePath = await _exportService.saveTextToFile(
+        _currentDocument!.extractedText,
+        filename: filename,
+        format: format,
+      );
+      return filePath;
+    } catch (e) {
+      _errorMessage = "Error: Failed to save file";
+      notifyListeners();
+      return null;
+    }
+  }
+
+  /// Share the current document text
+  Future<void> shareText({String? subject}) async {
+    if (_currentDocument == null) {
+      _errorMessage = "No document to share";
+      notifyListeners();
+      return;
+    }
+
+    try {
+      await _exportService.shareText(
+        _currentDocument!.extractedText,
+        subject: subject ?? _currentDocument!.title,
+      );
+    } catch (e) {
+      _errorMessage = "Error: Failed to share text";
+      notifyListeners();
+    }
+  }
+
+  /// Clear the current document data
   void clearCurrentDocument() {
     _currentDocument = null;
+    _errorMessage = '';
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _recognitionService.dispose();
+    super.dispose();
   }
 }

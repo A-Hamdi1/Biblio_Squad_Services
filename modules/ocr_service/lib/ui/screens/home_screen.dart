@@ -1,41 +1,39 @@
-import '../../ui/screens/image_picker_screen.dart';
-import '../widgets/home_header.dart';
 import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_strings.dart';
+import '../../ui/screens/image_picker_screen.dart';
+import '../components/app_button.dart';
+import '../components/app_header.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Widget buildTextContent() {
+  Widget _buildHeader() {
     return SafeArea(
       child: Column(
         children: <Widget>[
-          HomeHeader(
-            svgSrc: "packages/ocr_service/assets/images/arrow_left.svg",
-            press: () {
-              Navigator.pop(context);
-            },
-          ),
+          AppHeader(onBackPressed: () => Navigator.pop(context), showBar: true),
           const Spacer(),
           const Text(
-            "TEXT RECOGNITION",
+            AppStrings.homeTitle,
             style: TextStyle(
               fontSize: 32,
-              color: Color(0xFFFF7643),
+              color: AppColors.primary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            "Make your choice!",
+          const Text(
+            AppStrings.homeSubtitle,
             textAlign: TextAlign.center,
           ),
           const Spacer(flex: 2),
           Image.asset(
-            "packages/ocr_service/assets/images/splash.png",
+            "assets/images/splash.png",
             height: 265,
             width: 235,
           ),
@@ -54,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               Expanded(
                 flex: 3,
-                child: buildTextContent(),
+                child: _buildHeader(),
               ),
               Expanded(
                 flex: 2,
@@ -65,10 +63,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Spacer(flex: 3),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.image,
-                              color: Colors.white),
-                          label: const Text("Gallery"),
+                        child: AppButton(
+                          label: AppStrings.galleryButton,
+                          icon: Icons.image,
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -78,22 +75,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 50),
-                            backgroundColor: Color(0xFFFF7643),
-                            textStyle: const TextStyle(fontSize: 18),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.camera_alt_outlined,
-                              color: Colors.white),
-                          label: const Text("Camera"),
+                        child: AppButton(
+                          label: AppStrings.cameraButton,
+                          icon: Icons.camera_alt_outlined,
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -103,14 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 50),
-                            backgroundColor: Color(0xFFFF7643),
-                            textStyle: const TextStyle(fontSize: 18),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
                         ),
                       ),
                       const Spacer(),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ocr_service/ui/widgets/home_header.dart';
+import 'package:ocr_service/ui/components/app_header.dart';
 import 'package:provider/provider.dart';
-
 import '../../core/providers/auth_provider.dart';
 import '../../utils/input_validators.dart';
 import '../widgets/auth_input_field.dart';
@@ -50,11 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  HomeHeader(
-                    svgSrc:
-                        "packages/auth_service/assets/images/arrow_left.svg",
-                    press: () => Navigator.pop(context),
-                  ),
+                  AppHeader(
+                      onBackPressed: () => Navigator.pop(context),
+                      showBar: false),
                   const SizedBox(height: 20),
                   const Text(
                     "Login to Biblio Squad",

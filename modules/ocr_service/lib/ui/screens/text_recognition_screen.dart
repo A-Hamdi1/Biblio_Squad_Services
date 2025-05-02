@@ -1,15 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'pdf_export_screen.dart';
 import 'package:provider/provider.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_strings.dart';
 import '../../core/providers/document_provider.dart';
-import '../widgets/home_header.dart';
+import '../components/app_button.dart';
+import '../components/app_header.dart';
+import '../screens/export_screen.dart';
 
 class TextRecognitionScreen extends StatefulWidget {
   final File imageFile;
 
-  const TextRecognitionScreen({super.key, required this.imageFile});
+  const TextRecognitionScreen({Key? key, required this.imageFile})
+      : super(key: key);
 
   @override
   _TextRecognitionScreenState createState() => _TextRecognitionScreenState();
@@ -29,28 +33,34 @@ class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
 
   Future<void> _copyToClipboard() async {
     final text = Provider.of<DocumentProvider>(context, listen: false)
-        .currentDocument?.extractedText ?? '';
+            .currentDocument
+            ?.extractedText ??
+        '';
 
     try {
       await Clipboard.setData(ClipboardData(text: text));
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Texte copié!'),
-          duration: Duration(milliseconds: 800),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(AppStrings.textCopied),
+            duration: Duration(milliseconds: 800),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur lors de la copie'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(AppStrings.textCopyError),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
     }
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,19 +68,20 @@ class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
         child: Consumer<DocumentProvider>(
           builder: (context, documentProvider, child) {
             if (documentProvider.isProcessing) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary));
             }
 
             final document = documentProvider.currentDocument;
-            final extractedText = document?.extractedText ?? 'No text found';
+            final extractedText =
+                document?.extractedText ?? AppStrings.noTextFound;
 
             return Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
-                  child: HomeHeader(
-                    svgSrc: "packages/ocr_service/assets/images/arrow_left.svg",
-                    press: () => Navigator.pop(context),
+                  child: AppHeader(
+                    onBackPressed: () => Navigator.pop(context),
                   ),
                 ),
                 Expanded(
@@ -80,22 +91,14 @@ class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ElevatedButton.icon(
-                            icon: const Icon(Icons.image, color: Colors.white),
-                            label: const Text("Show Image"),
+                          AppButton(
+                            label: AppStrings.showImage,
+                            icon: Icons.image,
                             onPressed: () {
                               setState(() {
                                 _isImageVisible = !_isImageVisible;
                               });
                             },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 50),
-                              backgroundColor: Color(0xFFFF7643),
-                              textStyle: const TextStyle(fontSize: 18),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
                           ),
                           const SizedBox(height: 20),
                           if (_isImageVisible)
@@ -111,9 +114,20 @@ class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
                               ),
                             ),
                           const SizedBox(height: 20),
-                          Text(
-                            extractedText,
-                            style: const TextStyle(fontSize: 16),
+                          Container(
+                            padding: const EdgeInsets.all(16.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: AppColors.primary, width: 2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            constraints: const BoxConstraints(maxHeight: 300),
+                            child: SingleChildScrollView(
+                              child: Text(
+                                extractedText,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -124,40 +138,23 @@ class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.copy, color: Colors.white),
-                        label: const Text("Copier le texte"),
+                      AppButton(
+                        label: AppStrings.copyText,
+                        icon: Icons.copy,
                         onPressed: _copyToClipboard,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          backgroundColor: const Color(0xFFFF7643),
-                          textStyle: const TextStyle(fontSize: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.picture_as_pdf, color: Colors.white),
-                        label: const Text("Export as PDF"),
+                      const SizedBox(height: 16),
+                      AppButton(
+                        label: AppStrings.exportText,
+                        icon: Icons.save_alt,
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  PdfExportScreen(),
+                              builder: (context) => const ExportScreen(),
                             ),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          backgroundColor: Color(0xFFFF7643),
-                          textStyle: const TextStyle(fontSize: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
                       ),
                     ],
                   ),

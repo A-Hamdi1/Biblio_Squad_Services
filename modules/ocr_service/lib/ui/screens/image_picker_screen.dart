@@ -1,15 +1,18 @@
 import 'dart:io';
-import '../../core/providers/document_provider.dart';
-import 'text_recognition_screen.dart';
-import 'package:provider/provider.dart';
-import '../../ui/widgets/home_header.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_strings.dart';
+import '../../core/providers/document_provider.dart';
+import '../components/app_button.dart';
+import '../components/app_header.dart';
+import '../screens/text_recognition_screen.dart';
 
 class ImagePickerScreen extends StatefulWidget {
   final String source;
 
-  const ImagePickerScreen({super.key, required this.source});
+  const ImagePickerScreen({Key? key, required this.source}) : super(key: key);
 
   @override
   _ImagePickerScreenState createState() => _ImagePickerScreenState();
@@ -27,7 +30,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     final picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(
       source:
-      widget.source == "gallery" ? ImageSource.gallery : ImageSource.camera,
+          widget.source == "gallery" ? ImageSource.gallery : ImageSource.camera,
     );
 
     if (pickedFile != null) {
@@ -37,7 +40,8 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       });
 
       // Clear previous document data
-      Provider.of<DocumentProvider>(context, listen: false).clearCurrentDocument();
+      Provider.of<DocumentProvider>(context, listen: false)
+          .clearCurrentDocument();
 
       Navigator.push(
         context,
@@ -47,9 +51,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
         ),
       );
     } else {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -65,9 +71,8 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            HomeHeader(
-              svgSrc: "packages/ocr_service/assets/images/arrow_left.svg",
-              press: () {
+            AppHeader(
+              onBackPressed: () {
                 Navigator.pop(context);
               },
             ),
@@ -79,11 +84,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   children: [
                     // Instruction text
                     const Text(
-                      'Please select or capture an image for text recognition.',
+                      AppStrings.pickImageInstruction,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.normal,
-                        color: Colors.black54,
+                        color: AppColors.textSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -91,33 +96,25 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
 
                     _isLoading
                         ? const CircularProgressIndicator(
-                      color: Colors.blueAccent,
-                    )
+                            color: AppColors.info,
+                          )
                         : _selectedImage == null
-                        ? const Text("No image selected")
-                        : ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.file(
-                        _selectedImage!,
-                        fit: BoxFit.contain,
-                        height: 380,
-                        width: double.infinity,
-                      ),
-                    ),
+                            ? const Text(AppStrings.noImageSelected)
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  _selectedImage!,
+                                  fit: BoxFit.contain,
+                                  height: 380,
+                                  width: double.infinity,
+                                ),
+                              ),
                     const SizedBox(height: 40),
 
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.refresh),
-                      label: const Text("Pick Another Image"),
+                    AppButton(
+                      label: AppStrings.pickAnotherImage,
+                      icon: Icons.refresh,
                       onPressed: _pickImage,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: Color(0xFFFF7643),
-                        textStyle: const TextStyle(fontSize: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
                     ),
                   ],
                 ),

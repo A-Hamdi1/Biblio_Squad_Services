@@ -6,17 +6,15 @@ import '../../apis/recognition_api.dart';
 import '../../apis/translation_api.dart';
 import '../../models/translation_model.dart';
 
-enum TranslationStatus { initializing, ready, processing, completed, error }
-
 class TranslationProvider extends ChangeNotifier {
   CameraController? _cameraController;
-  TranslationStatus _status = TranslationStatus.initializing;
+  bool _isProcessing = false;
   Translation? _currentTranslation;
   String? _errorMessage;
   TranslateLanguage _selectedLanguage = TranslateLanguage.english;
 
   CameraController? get cameraController => _cameraController;
-  TranslationStatus get status => _status;
+  bool get isProcessing => _isProcessing;
   Translation? get currentTranslation => _currentTranslation;
   String? get errorMessage => _errorMessage;
   TranslateLanguage get selectedLanguage => _selectedLanguage;
@@ -29,7 +27,6 @@ class TranslationProvider extends ChangeNotifier {
     try {
       final cameras = await availableCameras();
       if (cameras.isEmpty) {
-        _status = TranslationStatus.error;
         _errorMessage = 'No cameras available';
         notifyListeners();
         return;
@@ -41,10 +38,8 @@ class TranslationProvider extends ChangeNotifier {
         enableAudio: false,
       );
       await _cameraController!.initialize();
-      _status = TranslationStatus.ready;
       notifyListeners();
     } catch (e) {
-      _status = TranslationStatus.error;
       _errorMessage = 'Error initializing camera: ${e.toString()}';
       notifyListeners();
     }
@@ -56,23 +51,23 @@ class TranslationProvider extends ChangeNotifier {
   }
 
   Future<void> translateText() async {
-    if (_cameraController == null || _status == TranslationStatus.processing)
-      return;
+    if (_cameraController == null || _isProcessing) return;
 
-    _status = TranslationStatus.processing;
+    _isProcessing = true;
     _currentTranslation = null;
     _errorMessage = null;
     notifyListeners();
 
     try {
+      // Prendre une nouvelle photo
       final image = await _cameraController!.takePicture();
       final recognizedText = await RecognitionApi.recognizeText(
         InputImage.fromFile(File(image.path)),
       );
 
       if (recognizedText == null || recognizedText.isEmpty) {
-        _status = TranslationStatus.error;
         _errorMessage = 'No text recognized';
+        _isProcessing = false;
         notifyListeners();
         return;
       }
@@ -83,8 +78,8 @@ class TranslationProvider extends ChangeNotifier {
       );
 
       if (translatedText == null) {
-        _status = TranslationStatus.error;
         _errorMessage = 'Translation failed';
+        _isProcessing = false;
         notifyListeners();
         return;
       }
@@ -94,19 +89,11 @@ class TranslationProvider extends ChangeNotifier {
         translatedText: translatedText,
         targetLanguage: _selectedLanguage.name,
       );
-      _status = TranslationStatus.completed;
-      notifyListeners();
-
-      // Réinitialiser pour permettre une nouvelle traduction
-      _status = TranslationStatus.ready;
+      _isProcessing = false;
       notifyListeners();
     } catch (e) {
-      _status = TranslationStatus.error;
-      _errorMessage = 'Error recognizing or translating text';
-      notifyListeners();
-
-      // Réinitialiser pour permettre une nouvelle tentative
-      _status = TranslationStatus.ready;
+      _errorMessage = 'Error recognizing or translating text: ${e.toString()}';
+      _isProcessing = false;
       notifyListeners();
     }
   }
@@ -114,7 +101,7 @@ class TranslationProvider extends ChangeNotifier {
   void reset() {
     _currentTranslation = null;
     _errorMessage = null;
-    _status = TranslationStatus.ready;
+    _isProcessing = false;
     notifyListeners();
   }
 

@@ -28,4 +28,19 @@ class Document {
       title: map['title'],
     );
   }
+
+  // Create a copy of this document with updated fields
+  Document copyWith({
+    String? imagePath,
+    String? extractedText,
+    DateTime? date,
+    String? title,
+  }) {
+    return Document(
+      imagePath: imagePath ?? this.imagePath,
+      extractedText: extractedText ?? this.extractedText,
+      date: date ?? this.date,
+      title: title ?? this.title,
+    );
+  }
 }
