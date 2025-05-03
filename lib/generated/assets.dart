@@ -9,11 +9,13 @@ class Assets {
   static const String imagesFaceRecognition =
       'assets/images/face_recognition.png';
   static const String imagesFaqChat = 'assets/images/faq-chat.png';
+  static const String imagesGestionUsers = 'assets/images/gestion_users.png';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesLogout = 'assets/images/logout.svg';
   static const String imagesOcr = 'assets/images/ocr.png';
   static const String imagesScanDocument = 'assets/images/scan_document.png';
   static const String imagesSettings = 'assets/images/Settings.svg';
+  static const String imagesSplash = 'assets/images/splash.png';
   static const String imagesTranslate = 'assets/images/translate.png';
   static const String muliMuli = 'assets/fonts/muli/Muli.ttf';
   static const String muliMuliBold = 'assets/fonts/muli/Muli-Bold.ttf';

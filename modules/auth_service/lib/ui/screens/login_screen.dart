@@ -49,9 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  AppHeader(
-                      onBackPressed: () => Navigator.pop(context),
-                      showBar: false),
+                  AppHeader(showBar: true),
                   const SizedBox(height: 20),
                   const Text(
                     "Login to Biblio Squad",

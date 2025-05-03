@@ -1,0 +1,37 @@
+library gestion_users_service;
+
+// Export screens
+export 'ui/screens/users_list_screen.dart';
+
+// Main service
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
+import 'core/providers/users_provider.dart';
+import 'ui/screens/users_list_screen.dart';
+
+/// UsersService is the main entry point for the users management module.
+class GestionUsersService {
+  static void initializeService() {
+    // No specific initialization required
+  }
+  /// Navigate to the users list screen from any context
+  static void navigateToUsersListScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MultiProvider(
+          providers: getProviders(),
+          child: const UsersListScreen(),
+        ),
+      ),
+    );
+  }
+
+  /// Get the providers required for this module
+  static List<SingleChildWidget> getProviders() {
+    return [
+      ChangeNotifierProvider(create: (_) => UsersProvider()),
+    ];
+  }
+}

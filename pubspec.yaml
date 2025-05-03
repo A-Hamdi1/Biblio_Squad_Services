@@ -27,6 +27,9 @@ dependencies:
     path: modules/document_scan_service
   auth_service:
     path: modules/auth_service
+  gestion_users_service:
+    path: modules/gestion_users_service
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

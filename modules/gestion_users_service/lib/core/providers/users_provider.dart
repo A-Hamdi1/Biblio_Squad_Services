@@ -1,0 +1,59 @@
+import 'package:auth_service/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+enum UsersStatus { idle, loading, success, error }
+
+class UsersProvider extends ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  UsersStatus _status = UsersStatus.idle;
+  String _errorMessage = '';
+  List<UserModel> _users = [];
+
+  UsersStatus get status => _status;
+  String get errorMessage => _errorMessage;
+  List<UserModel> get users => _users;
+
+  // Fetch all users
+  Future<void> fetchUsers() async {
+    _status = UsersStatus.loading;
+    _errorMessage = '';
+    notifyListeners();
+
+    try {
+      final querySnapshot = await _firestore.collection('users').get();
+      _users = querySnapshot.docs
+          .map((doc) => UserModel.fromMap(doc.data()))
+          .toList();
+      _status = UsersStatus.success;
+    } catch (e) {
+      _status = UsersStatus.error;
+      _errorMessage = 'Failed to fetch users: $e';
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  // Delete user
+  Future<void> deleteUser(String userId) async {
+    _status = UsersStatus.loading;
+    _errorMessage = '';
+    notifyListeners();
+
+    try {
+      // Delete user document from Firestore
+      await _firestore.collection('users').doc(userId).delete();
+
+      // Remove user from local list
+      _users.removeWhere((user) => user.uid == userId);
+
+      _status = UsersStatus.success;
+    } catch (e) {
+      _status = UsersStatus.error;
+      _errorMessage = 'Failed to delete user: $e';
+    } finally {
+      notifyListeners();
+    }
+  }
+}

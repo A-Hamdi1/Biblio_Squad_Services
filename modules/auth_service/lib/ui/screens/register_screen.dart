@@ -73,14 +73,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  AppHeader(
-                      onBackPressed: () => Navigator.pop(context),
-                      showBar: false),
+                  AppHeader(showBar: true),
                   const SizedBox(height: 20),
                   const Text(
                     "Register to Biblio Squad",
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFFF7643),
                     ),
