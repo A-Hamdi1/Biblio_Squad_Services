@@ -14,9 +14,10 @@ class TranslationScreen extends StatelessWidget {
     return Scaffold(
       body: Consumer<TranslationProvider>(
         builder: (context, provider, child) {
+          // Create a proper language name map with proper formatting
           final languageNames = {
             for (var lang in TranslateLanguage.values)
-              lang: lang.name[0].toUpperCase() + lang.name.substring(1),
+              lang: _formatLanguageName(lang.name),
           };
 
           return Column(
@@ -24,42 +25,79 @@ class TranslationScreen extends StatelessWidget {
               // Top Bar with Language Selector
               SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                   child: FadeInDown(
                     duration: const Duration(milliseconds: 500),
-                    child: GlassCard(
+                    child: GlassCard2(
                       height: 50,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.language,
-                            size: 24,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<TranslateLanguage>(
-                                value: provider.selectedLanguage,
-                                onChanged: (lang) {
-                                  if (lang != null) {
-                                    provider.setSelectedLanguage(lang);
-                                  }
-                                },
-                                items: languageNames.entries.map((entry) {
-                                  return DropdownMenuItem(
-                                    value: entry.key,
-                                    child: Text(
-                                      entry.value,
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                    ),
-                                  );
-                                }).toList(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          children: [
+                            // Language icon (always visible)
+                            Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFF7643).withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.language,
+                                size: 20,
+                                color: Color(0xFFFF7643),
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 12),
+                            // Selected language display and dropdown
+                            Expanded(
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<TranslateLanguage>(
+                                  value: provider.selectedLanguage,
+                                  isExpanded: true,
+                                  icon: const Icon(Icons.arrow_drop_down,
+                                      color: Color(0xFFFF7643)),
+                                  hint: const Text("Select language"),
+                                  // Display the current language name
+                                  selectedItemBuilder: (BuildContext context) {
+                                    return languageNames.entries
+                                        .map<Widget>((entry) {
+                                      return Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          entry.value,
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList();
+                                  },
+                                  onChanged: (lang) {
+                                    if (lang != null) {
+                                      provider.setSelectedLanguage(lang);
+                                    }
+                                  },
+                                  items: languageNames.entries.map((entry) {
+                                    return DropdownMenuItem(
+                                      value: entry.key,
+                                      child: Text(
+                                        entry.value,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -97,14 +135,19 @@ class TranslationScreen extends StatelessWidget {
                     // Translation Result
                     if (provider.currentTranslation?.translatedText != null)
                       Positioned(
-                        bottom: 100,
-                        left: 20,
-                        right: 20,
+                        bottom: 85,
+                        left: 10,
+                        right: 10,
                         child: FadeInUp(
                           duration: const Duration(milliseconds: 500),
-                          child: GlassCard(
+                          child: GlassCard2(
+                            expand: false,
                             child: Padding(
-                              padding: const EdgeInsets.all(15.0),
+                              padding: const EdgeInsets.only(
+                                  top: 20.0,
+                                  bottom: 20.0,
+                                  left: 10.0,
+                                  right: 10.0),
                               child: Text(
                                 provider.currentTranslation!.translatedText!,
                                 style: Theme.of(context)
@@ -124,16 +167,20 @@ class TranslationScreen extends StatelessWidget {
                     // Error Message
                     if (provider.errorMessage != null)
                       Positioned(
-                        bottom: 100,
-                        left: 20,
-                        right: 20,
+                        bottom: 85,
+                        left: 10,
+                        right: 10,
                         child: FadeInUp(
                           duration: const Duration(milliseconds: 500),
-                          child: GlassCard(
+                          child: GlassCard2(
+                            expand: false,
                             backgroundColor: Color(0x55EF5350),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 20.0),
+                              padding: const EdgeInsets.only(
+                                  top: 20.0,
+                                  bottom: 20.0,
+                                  left: 10.0,
+                                  right: 10.0),
                               child: Text(
                                 provider.errorMessage!,
                                 style: Theme.of(context)
@@ -151,7 +198,7 @@ class TranslationScreen extends StatelessWidget {
 
                     // Translate Button
                     Positioned(
-                      bottom: 30,
+                      bottom: 20,
                       left: MediaQuery.of(context).size.width * 0.5 - 30,
                       child: FadeInUp(
                         duration: const Duration(milliseconds: 500),
@@ -164,24 +211,35 @@ class TranslationScreen extends StatelessWidget {
                             height: 60,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      const Color(0xFFFF7643).withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                               gradient: LinearGradient(
                                 colors: provider.isProcessing
                                     ? [Colors.grey, Colors.grey]
-                                    : [Color(0xFF1E88E5), Color(0xFF00BCD4)],
+                                    : [Color(0xFFFF7643), Color(0xFFFF7643)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                             ),
-                            child: provider.isProcessing
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  )
-                                : const Icon(
-                                    Icons.translate,
-                                    size: 30,
-                                    color: Colors.white,
-                                  ),
+                            child: Center(
+                              child: provider.isProcessing
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    )
+                                  : const Icon(
+                                      Icons.translate,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                            ),
                           ),
                         ),
                       ),
@@ -195,44 +253,50 @@ class TranslationScreen extends StatelessWidget {
       ),
     );
   }
+
+  // Helper method to properly format language names
+  String _formatLanguageName(String name) {
+    // Replace underscores with spaces and properly capitalize words
+    final words = name.split('_');
+    return words.map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
 }
 
-class GlassCard extends StatelessWidget {
+class GlassCard2 extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
   final double? height;
+  final bool expand;
 
-  const GlassCard({
+  const GlassCard2({
     required this.child,
     this.backgroundColor,
     this.height,
+    this.expand = true,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          height: height,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          decoration: BoxDecoration(
-            color: backgroundColor ?? Color(0x33FFFFFF),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Color(0x33FFFFFF).withOpacity(0.5)),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x4D000000).withOpacity(0.3),
-                blurRadius: 20,
-                spreadRadius: 5,
-              ),
-            ],
-          ),
-          child: child,
-        ),
+    final container = Container(
+      height: height,
+      padding: height != null ? EdgeInsets.zero : const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: backgroundColor ?? Colors.white70,
+        border: Border.all(color: Color(0xFFFF7643), width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      constraints: const BoxConstraints(maxHeight: 300),
+      child: SingleChildScrollView(
+        child: child,
       ),
     );
+
+    return expand
+        ? Expanded(child: SingleChildScrollView(child: container))
+        : container;
   }
 }

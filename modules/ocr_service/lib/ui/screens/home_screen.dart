@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const Spacer(flex: 2),
           Image.asset(
-            "assets/images/splash.png",
+            "assets/images/logo.png",
             height: 265,
             width: 235,
           ),

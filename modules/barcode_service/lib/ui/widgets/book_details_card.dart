@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/book_model.dart';
+import 'app_header.dart';
 
 class BookDetailsCard extends StatelessWidget {
   final Book book;
@@ -13,39 +14,52 @@ class BookDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              book.title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return SafeArea(
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Color(0xFFFF7643), width: 2),
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Text("Author: ", style: TextStyle(fontSize: 16)),
-                GestureDetector(
-                  onTap: () => onAuthorTap(book.author),
-                  child: Text(
-                    book.author,
+            constraints: const BoxConstraints(maxHeight: 300),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    book.title,
                     style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
-                    ),
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Text("Author: ", style: TextStyle(fontSize: 16)),
+                      GestureDetector(
+                        onTap: () => onAuthorTap(book.author),
+                        child: Text(
+                          book.author,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text("Published Year: ${book.publishedYear}",
+                      style: const TextStyle(fontSize: 16)),
+                  Text("Category: ${book.category}",
+                      style: const TextStyle(fontSize: 16)),
+                  Text("Price: \$${book.price}",
+                      style: const TextStyle(fontSize: 16)),
+                ],
+              ),
             ),
-            const SizedBox(height: 4),
-            Text("Published Year: ${book.publishedYear}", style: const TextStyle(fontSize: 16)),
-            Text("Category: ${book.category}", style: const TextStyle(fontSize: 16)),
-            Text("Price: \$${book.price}", style: const TextStyle(fontSize: 16)),
-          ],
+          ),
         ),
       ),
     );
