@@ -5,7 +5,6 @@ import '../../models/document_model.dart';
 class TextRecognitionService {
   final TextRecognizer _textRecognizer;
 
-  // Singleton pattern
   static final TextRecognitionService _instance =
       TextRecognitionService._internal();
 
@@ -14,7 +13,6 @@ class TextRecognitionService {
   TextRecognitionService._internal()
       : _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
 
-  /// Process an image file and extract text using ML Kit
   Future<Document> processImage(File imageFile, {String? title}) async {
     final inputImage = InputImage.fromFile(imageFile);
 
@@ -39,7 +37,6 @@ class TextRecognitionService {
     }
   }
 
-  /// Close the text recognizer when not needed anymore
   void dispose() {
     _textRecognizer.close();
   }

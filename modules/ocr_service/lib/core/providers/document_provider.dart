@@ -16,7 +16,6 @@ class DocumentProvider extends ChangeNotifier {
   bool get isProcessing => _isProcessing;
   String get errorMessage => _errorMessage;
 
-  /// Process an image file to extract text
   Future<void> processImage(File imageFile, {String? title}) async {
     _isProcessing = true;
     _errorMessage = '';
@@ -33,7 +32,6 @@ class DocumentProvider extends ChangeNotifier {
     }
   }
 
-  /// Save the current document text to a file
   Future<String?> saveTextToFile(
       {ExportFormat format = ExportFormat.text}) async {
     if (_currentDocument == null) {
@@ -57,7 +55,6 @@ class DocumentProvider extends ChangeNotifier {
     }
   }
 
-  /// Share the current document text
   Future<void> shareText({String? subject}) async {
     if (_currentDocument == null) {
       _errorMessage = "No document to share";
@@ -76,7 +73,6 @@ class DocumentProvider extends ChangeNotifier {
     }
   }
 
-  /// Clear the current document data
   void clearCurrentDocument() {
     _currentDocument = null;
     _errorMessage = '';

@@ -3,7 +3,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class FileUtils {
-  /// Check if storage permission is granted
   static Future<bool> checkStoragePermission() async {
     final status = await Permission.storage.status;
     if (status.isGranted) {
@@ -14,7 +13,6 @@ class FileUtils {
     return result.isGranted;
   }
 
-  /// Get the app's document directory
   static Future<Directory?> getAppDirectory() async {
     try {
       return await getApplicationDocumentsDirectory();
@@ -24,7 +22,6 @@ class FileUtils {
     }
   }
 
-  /// Get the app's external storage directory
   static Future<Directory?> getExternalDirectory() async {
     try {
       return await getExternalStorageDirectory();
@@ -34,7 +31,6 @@ class FileUtils {
     }
   }
 
-  /// Create a temporary file with the given extension
   static Future<File?> createTempFile(String extension) async {
     try {
       final tempDir = await getTemporaryDirectory();

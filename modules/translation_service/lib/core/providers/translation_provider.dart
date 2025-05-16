@@ -59,7 +59,6 @@ class TranslationProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Prendre une nouvelle photo
       final image = await _cameraController!.takePicture();
       final recognizedText = await RecognitionApi.recognizeText(
         InputImage.fromFile(File(image.path)),

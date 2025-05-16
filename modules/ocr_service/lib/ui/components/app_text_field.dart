@@ -12,7 +12,7 @@ class AppTextField extends StatelessWidget {
   final IconData? prefixIcon;
 
   const AppTextField({
-    Key? key,
+    super.key,
     this.hintText,
     this.labelText,
     this.controller,
@@ -21,7 +21,7 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.keyboardType = TextInputType.text,
     this.prefixIcon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

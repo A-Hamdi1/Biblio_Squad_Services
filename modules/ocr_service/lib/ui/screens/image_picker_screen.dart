@@ -12,7 +12,7 @@ import '../screens/text_recognition_screen.dart';
 class ImagePickerScreen extends StatefulWidget {
   final String source;
 
-  const ImagePickerScreen({Key? key, required this.source}) : super(key: key);
+  const ImagePickerScreen({super.key, required this.source});
 
   @override
   _ImagePickerScreenState createState() => _ImagePickerScreenState();

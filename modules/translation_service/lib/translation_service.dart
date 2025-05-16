@@ -17,7 +17,6 @@ import 'package:provider/single_child_widget.dart';
 import 'core/providers/translation_provider.dart';
 import 'ui/screens/translation_screen.dart';
 
-/// TranslationService is the main entry point for the text recognition and translation module.
 class TranslationService {
   static void initializeService() async {
     WidgetsFlutterBinding.ensureInitialized();

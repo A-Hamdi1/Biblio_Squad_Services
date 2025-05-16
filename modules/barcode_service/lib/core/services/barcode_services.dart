@@ -43,11 +43,6 @@ class BarcodeServices {
   }
 
   InputImage _convertToInputImage(CameraImage image) {
-    // Vous devrez implémenter cette méthode comme dans votre code original
-    // Conversion de CameraImage en InputImage pour ML Kit
-    // ...
-
-    // Code simplifié pour l'exemple
     final WriteBuffer allBytes = WriteBuffer();
     for (final plane in image.planes) {
       allBytes.putUint8List(plane.bytes);

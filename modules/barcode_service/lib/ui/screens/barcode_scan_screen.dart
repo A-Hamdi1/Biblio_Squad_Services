@@ -48,15 +48,12 @@ class BarcodeScanScreen extends StatelessWidget {
                     return Expanded(
                       child: Column(
                         children: [
-                          // Camera preview
                           Expanded(
                             child: provider.cameraController != null
                                 ? CameraPreview(provider.cameraController!)
                                 : const Center(
                                     child: CircularProgressIndicator()),
                           ),
-
-                          // Barcode results
                           if (provider.scannedBarcode.isNotEmpty)
                             Container(
                               width: double.infinity,

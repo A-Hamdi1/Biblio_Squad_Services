@@ -7,36 +7,29 @@ import 'package:share_plus/share_plus.dart';
 enum ExportFormat { text, csv }
 
 class FileExportService {
-  // Singleton pattern
   static final FileExportService _instance = FileExportService._internal();
 
   factory FileExportService() => _instance;
 
   FileExportService._internal();
 
-  /// Save text content to a file
   Future<String> saveTextToFile(String content,
       {String? filename, ExportFormat format = ExportFormat.text}) async {
-    // Check storage permission
     if (!await _checkPermission()) {
       throw Exception("Storage permission denied");
     }
 
-    // Get file extension
     final extension = format == ExportFormat.text ? 'txt' : 'csv';
 
-    // Generate filename if not provided
     final String finalFilename = filename ??
         'document_${DateTime.now().millisecondsSinceEpoch}.$extension';
 
     try {
-      // Get storage directory
       final directory = await getExternalStorageDirectory();
       if (directory == null) {
         throw Exception("Could not access storage directory");
       }
 
-      // Create and write to file
       final file = File('${directory.path}/$finalFilename');
       await file.writeAsString(content);
 
@@ -46,7 +39,6 @@ class FileExportService {
     }
   }
 
-  /// Share text content with other apps
   Future<void> shareText(String content, {String? subject}) async {
     try {
       await Share.share(
@@ -58,7 +50,6 @@ class FileExportService {
     }
   }
 
-  /// Share a file with other apps
   Future<void> shareFile(String filePath, {String? subject}) async {
     try {
       await Share.shareXFiles(
@@ -70,7 +61,6 @@ class FileExportService {
     }
   }
 
-  /// Check if the app has storage permission
   Future<bool> _checkPermission() async {
     final status = await Permission.storage.status;
     if (status.isGranted) {

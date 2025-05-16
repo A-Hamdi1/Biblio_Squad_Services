@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_strings.dart';
 
 class AppHeader extends StatelessWidget {
   final VoidCallback? onBackPressed;
   final bool showBar;
 
   const AppHeader({
-    Key? key,
+    super.key,
     this.onBackPressed,
     this.showBar = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +18,10 @@ class AppHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Back button if provided
           if (onBackPressed != null)
             _buildBackButton()
           else
-            const SizedBox(width: 46), // Same width as button for alignment
+            const SizedBox(width: 46),
 
           // Search bar
           if (showBar) Expanded(child: _buildSpecialField()),

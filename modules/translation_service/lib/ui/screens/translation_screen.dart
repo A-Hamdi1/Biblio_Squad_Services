@@ -14,7 +14,6 @@ class TranslationScreen extends StatelessWidget {
     return Scaffold(
       body: Consumer<TranslationProvider>(
         builder: (context, provider, child) {
-          // Create a proper language name map with proper formatting
           final languageNames = {
             for (var lang in TranslateLanguage.values)
               lang: _formatLanguageName(lang.name),
@@ -22,7 +21,6 @@ class TranslationScreen extends StatelessWidget {
 
           return Column(
             children: [
-              // Top Bar with Language Selector
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
@@ -34,7 +32,6 @@ class TranslationScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Row(
                           children: [
-                            // Language icon (always visible)
                             Container(
                               width: 28,
                               height: 28,
@@ -49,50 +46,91 @@ class TranslationScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            // Selected language display and dropdown
                             Expanded(
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<TranslateLanguage>(
-                                  value: provider.selectedLanguage,
-                                  isExpanded: true,
-                                  icon: const Icon(Icons.arrow_drop_down,
-                                      color: Color(0xFFFF7643)),
-                                  hint: const Text("Select language"),
-                                  // Display the current language name
-                                  selectedItemBuilder: (BuildContext context) {
-                                    return languageNames.entries
-                                        .map<Widget>((entry) {
-                                      return Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          entry.value,
-                                          style: const TextStyle(
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16,
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  inputDecorationTheme:
+                                      const InputDecorationTheme(
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<TranslateLanguage>(
+                                    value: provider.selectedLanguage,
+                                    isExpanded: true,
+                                    dropdownColor:
+                                        Colors.white.withOpacity(0.9),
+                                    elevation: 3,
+                                    icon: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFF7643)
+                                            .withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Color(0xFFFF7643),
+                                      ),
+                                    ),
+                                    hint: Text(
+                                      "Select language",
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    selectedItemBuilder:
+                                        (BuildContext context) {
+                                      return languageNames.entries
+                                          .map<Widget>((entry) {
+                                        return Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            entry.value,
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
+                                    onChanged: (lang) {
+                                      if (lang != null) {
+                                        provider.setSelectedLanguage(lang);
+                                      }
+                                    },
+                                    items: languageNames.entries.map((entry) {
+                                      return DropdownMenuItem(
+                                        value: entry.key,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 4),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: const Color(0xFFFF7643)
+                                                    .withOpacity(0.1),
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            entry.value,
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 16,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                       );
-                                    }).toList();
-                                  },
-                                  onChanged: (lang) {
-                                    if (lang != null) {
-                                      provider.setSelectedLanguage(lang);
-                                    }
-                                  },
-                                  items: languageNames.entries.map((entry) {
-                                    return DropdownMenuItem(
-                                      value: entry.key,
-                                      child: Text(
-                                        entry.value,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }).toList(),
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -103,8 +141,6 @@ class TranslationScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // Camera Preview
               Expanded(
                 child: Stack(
                   children: [
@@ -117,7 +153,6 @@ class TranslationScreen extends StatelessWidget {
                     else
                       const Center(child: CircularProgressIndicator.adaptive()),
 
-                    // Gradient Overlay
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -254,9 +289,7 @@ class TranslationScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to properly format language names
   String _formatLanguageName(String name) {
-    // Replace underscores with spaces and properly capitalize words
     final words = name.split('_');
     return words.map((word) {
       if (word.isEmpty) return '';

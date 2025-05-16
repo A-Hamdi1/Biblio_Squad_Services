@@ -21,9 +21,7 @@ class AppHeader extends StatelessWidget {
           if (onBackPressed != null)
             _buildBackButton()
           else
-            const SizedBox(width: 46), // Same width as button for alignment
-
-          // Search bar
+            const SizedBox(width: 46),
           if (showBar) Expanded(child: _buildSpecialField()),
         ],
       ),

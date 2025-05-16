@@ -12,8 +12,7 @@ import '../screens/export_screen.dart';
 class TextRecognitionScreen extends StatefulWidget {
   final File imageFile;
 
-  const TextRecognitionScreen({Key? key, required this.imageFile})
-      : super(key: key);
+  const TextRecognitionScreen({super.key, required this.imageFile});
 
   @override
   _TextRecognitionScreenState createState() => _TextRecognitionScreenState();

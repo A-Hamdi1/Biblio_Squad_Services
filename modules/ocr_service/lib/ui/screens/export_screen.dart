@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/providers/document_provider.dart';
@@ -10,7 +9,7 @@ import '../components/app_button.dart';
 import '../components/app_header.dart';
 
 class ExportScreen extends StatefulWidget {
-  const ExportScreen({Key? key}) : super(key: key);
+  const ExportScreen({super.key});
 
   @override
   _ExportScreenState createState() => _ExportScreenState();

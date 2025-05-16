@@ -29,7 +29,6 @@ class Document {
     );
   }
 
-  // Create a copy of this document with updated fields
   Document copyWith({
     String? imagePath,
     String? extractedText,
