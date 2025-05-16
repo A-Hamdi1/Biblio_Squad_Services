@@ -34,13 +34,46 @@ class AuthorBooksPage extends StatelessWidget {
           }
 
           return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
             itemCount: books.length,
             itemBuilder: (context, index) {
               final book = books[index];
-              return ListTile(
-                title: Text(book.title),
-                subtitle: Text('Year: ${book.publishedYear} - Price: \$${book.price}'),
-                leading: Text(book.isbn),
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xFFFF7643), width: 2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      book.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "ISBN: ${book.isbn}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      "Published Year: ${book.publishedYear}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      "Category: ${book.category}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      "Price: \$${book.price}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
               );
             },
           );
