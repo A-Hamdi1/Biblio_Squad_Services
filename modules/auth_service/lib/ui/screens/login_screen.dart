@@ -33,7 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
           .then((_) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         if (authProvider.status == AuthStatus.success) {
-          // Rediriger vers la page d'accueil en effaçant la pile de navigation
           Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
         }
       });
@@ -50,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  AppHeader(showBar: false), // Masquer la barre de recherche
+                  AppHeader(showBar: false),
                   const SizedBox(height: 30),
                   Image.asset(
                     "assets/images/logo.png",
@@ -59,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    "Connexion à Biblio Squad",
+                    "Login to Biblio Squad",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -68,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    "Accédez à vos services personnalisés",
+                    "Access your personalized services",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -88,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 16),
                         AuthInputField(
                           controller: _passwordController,
-                          label: "Mot de passe",
+                          label: "Password",
                           validator: InputValidators.validatePassword,
                           isPassword: true,
                         ),
@@ -103,8 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         AuthButton(
                           text: authProvider.status == AuthStatus.loading
-                              ? "Connexion en cours..."
-                              : "Se connecter",
+                              ? "Logging in..."
+                              : "Login",
                           onPressed: authProvider.status == AuthStatus.loading
                               ? null
                               : _handleLogin,
@@ -120,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           child: const Text(
-                            "Pas encore de compte ? Inscrivez-vous",
+                            "Don't have an account? Sign up",
                             style: TextStyle(
                               color: Color(0xFFFF7643),
                               fontSize: 16,

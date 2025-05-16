@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class AuthButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
-  final TextStyle? textStyle; // Make textStyle optional
-  final Color? backgroundColor; // Make backgroundColor optional
+  final TextStyle? textStyle;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
 
   const AuthButton({
     super.key,
@@ -12,6 +13,7 @@ class AuthButton extends StatelessWidget {
     this.onPressed,
     this.textStyle,
     this.backgroundColor,
+    this.foregroundColor,
   });
 
   @override
@@ -20,10 +22,9 @@ class AuthButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),
-        backgroundColor: backgroundColor ??
-            const Color(0xFFFF7643), // Default background color
-        textStyle:
-            textStyle ?? const TextStyle(fontSize: 18), // Default text style
+        backgroundColor: backgroundColor ?? const Color(0xFFFF7643),
+        textStyle: textStyle,
+        foregroundColor: foregroundColor ?? Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

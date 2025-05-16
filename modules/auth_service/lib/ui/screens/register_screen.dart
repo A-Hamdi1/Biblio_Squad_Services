@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../core/providers/auth_provider.dart';
 import '../../models/user_model.dart';
 import '../../utils/input_validators.dart';
-import '../widgets/app_header.dart';
 import '../widgets/auth_input_field.dart';
 import '../widgets/auth_button.dart';
 import 'login_screen.dart';
@@ -53,15 +52,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .then((_) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         if (authProvider.status == AuthStatus.success) {
-          // Afficher un message de succès
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Inscription réussie! Veuillez vous connecter.'),
+              content: Text('Registration successful! Please log in.'),
               duration: Duration(seconds: 2),
               backgroundColor: Colors.green,
             ),
           );
-          // Rediriger vers l'écran de connexion
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -83,14 +80,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  AppHeader(
-                    onBackPressed: () => Navigator.pop(context),
-                    showBar:
-                        false, // Masquer la barre de recherche sur l'écran d'inscription
-                  ),
-                  const SizedBox(height: 20),
                   const Text(
-                    "Inscription à Biblio Squad",
+                    "Sign up for Biblio Squad",
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -99,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    "Créez votre compte pour accéder aux services",
+                    "Create your account to access the services",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -113,13 +104,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         AuthInputField(
                           controller: _nameController,
-                          label: "Nom complet",
+                          label: "Fullname",
                           validator: InputValidators.validateName,
                         ),
                         const SizedBox(height: 16),
                         AuthInputField(
                           controller: _phoneController,
-                          label: "Numéro de téléphone",
+                          label: "Phone number",
                           validator: InputValidators.validatePhone,
                           keyboardType: TextInputType.phone,
                         ),
@@ -133,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 16),
                         AuthInputField(
                           controller: _passwordController,
-                          label: "Mot de passe",
+                          label: "Password",
                           validator: InputValidators.validatePassword,
                           isPassword: true,
                         ),
@@ -144,7 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             const Padding(
                               padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
                               child: Text(
-                                "Choisissez votre rôle:",
+                                "Choose your role:",
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -156,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               children: [
                                 Expanded(
                                   child: AuthButton(
-                                    text: "Utilisateur",
+                                    text: "User",
                                     onPressed: authProvider.status ==
                                             AuthStatus.loading
                                         ? null
@@ -166,12 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   UserModel.ROLE_USER;
                                             });
                                           },
-                                    textStyle: TextStyle(
-                                      color:
-                                          _selectedRole == UserModel.ROLE_USER
-                                              ? Colors.white
-                                              : const Color(0xFFFF7643),
-                                    ),
+                                    foregroundColor: Colors.black,
                                     backgroundColor:
                                         _selectedRole == UserModel.ROLE_USER
                                             ? const Color(0xFFFF7643)
@@ -181,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: AuthButton(
-                                    text: "Auteur",
+                                    text: "Author",
                                     onPressed: authProvider.status ==
                                             AuthStatus.loading
                                         ? null
@@ -191,12 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   UserModel.ROLE_AUTHOR;
                                             });
                                           },
-                                    textStyle: TextStyle(
-                                      color:
-                                          _selectedRole == UserModel.ROLE_AUTHOR
-                                              ? Colors.white
-                                              : const Color(0xFFFF7643),
-                                    ),
+                                    foregroundColor: Colors.black,
                                     backgroundColor:
                                         _selectedRole == UserModel.ROLE_AUTHOR
                                             ? const Color(0xFFFF7643)
@@ -218,8 +199,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         AuthButton(
                           text: authProvider.status == AuthStatus.loading
-                              ? "Inscription en cours..."
-                              : "S'inscrire",
+                              ? "Signing up..."
+                              : "Sign up",
                           onPressed: authProvider.status == AuthStatus.loading
                               ? null
                               : _handleRegister,
@@ -235,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             );
                           },
                           child: const Text(
-                            "Déjà un compte ? Connectez-vous",
+                            "Already have an account? Log in",
                             style: TextStyle(
                               color: Color(0xFFFF7643),
                               fontSize: 16,
