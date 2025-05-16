@@ -1,7 +1,6 @@
-import 'package:auth_service/core/providers/auth_provider.dart';
+import 'package:auth_service/auth_service.dart';
 import 'package:document_scan_service/ui/widgets/home_header.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../visions/vision_features .dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,8 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(children: [
             HomeHeader(
               svgSrc: "assets/images/logout.svg",
-              press: () {
-                Provider.of<AuthProvider>(context, listen: false).logout();
+              press: () async {
+                await AuthService.logout(context);
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                      (route) => false);
+                }
               },
             ),
             SizedBox(height: 50),

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:ocr_service/ui/components/app_header.dart';
 import 'package:provider/provider.dart';
 import '../../core/providers/auth_provider.dart';
+import '../../models/user_model.dart';
 import '../../utils/input_validators.dart';
+import '../widgets/app_header.dart';
 import '../widgets/auth_input_field.dart';
 import '../widgets/auth_button.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final String initialRole;
+
+  const RegisterScreen({super.key, this.initialRole = UserModel.ROLE_USER});
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -20,7 +23,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  String _selectedRole = 'Client'; // Default role
+  late String _selectedRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedRole = widget.initialRole;
+  }
 
   @override
   void dispose() {
@@ -44,14 +53,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .then((_) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         if (authProvider.status == AuthStatus.success) {
-          // Navigate to LoginScreen instead of popping
+          // Afficher un message de succès
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Registration successful! Please log in.'),
+              content: Text('Inscription réussie! Veuillez vous connecter.'),
               duration: Duration(seconds: 2),
               backgroundColor: Colors.green,
             ),
           );
+          // Rediriger vers l'écran de connexion
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -73,30 +83,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  AppHeader(showBar: true),
+                  AppHeader(
+                    onBackPressed: () => Navigator.pop(context),
+                    showBar:
+                        false, // Masquer la barre de recherche sur l'écran d'inscription
+                  ),
                   const SizedBox(height: 20),
                   const Text(
-                    "Register to Biblio Squad",
+                    "Inscription à Biblio Squad",
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFFF7643),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Créez votre compte pour accéder aux services",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 30),
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
                         AuthInputField(
                           controller: _nameController,
-                          label: "Full Name",
+                          label: "Nom complet",
                           validator: InputValidators.validateName,
                         ),
                         const SizedBox(height: 16),
                         AuthInputField(
                           controller: _phoneController,
-                          label: "Phone Number",
+                          label: "Numéro de téléphone",
                           validator: InputValidators.validatePhone,
                           keyboardType: TextInputType.phone,
                         ),
@@ -110,56 +133,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 16),
                         AuthInputField(
                           controller: _passwordController,
-                          label: "Password",
+                          label: "Mot de passe",
                           validator: InputValidators.validatePassword,
                           isPassword: true,
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        const SizedBox(height: 20),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: AuthButton(
-                                text: "Author",
-                                onPressed:
-                                    authProvider.status == AuthStatus.loading
-                                        ? null
-                                        : () {
-                                            setState(() {
-                                              _selectedRole = 'Author';
-                                            });
-                                          },
-                                textStyle: TextStyle(
-                                  color: _selectedRole == 'Author'
-                                      ? Colors.black
-                                      : const Color(0xFFFF7643),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
+                              child: Text(
+                                "Choisissez votre rôle:",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                                backgroundColor: _selectedRole == 'Author'
-                                    ? const Color(0xFFFF7643)
-                                    : Colors.grey[200],
                               ),
                             ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: AuthButton(
-                                text: "Client",
-                                onPressed:
-                                    authProvider.status == AuthStatus.loading
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: AuthButton(
+                                    text: "Utilisateur",
+                                    onPressed: authProvider.status ==
+                                            AuthStatus.loading
                                         ? null
                                         : () {
                                             setState(() {
-                                              _selectedRole = 'Client';
+                                              _selectedRole =
+                                                  UserModel.ROLE_USER;
                                             });
                                           },
-                                textStyle: TextStyle(
-                                  color: _selectedRole == 'Client'
-                                      ? Colors.black
-                                      : const Color(0xFFFF7643),
+                                    textStyle: TextStyle(
+                                      color:
+                                          _selectedRole == UserModel.ROLE_USER
+                                              ? Colors.white
+                                              : const Color(0xFFFF7643),
+                                    ),
+                                    backgroundColor:
+                                        _selectedRole == UserModel.ROLE_USER
+                                            ? const Color(0xFFFF7643)
+                                            : Colors.grey[200],
+                                  ),
                                 ),
-                                backgroundColor: _selectedRole == 'Client'
-                                    ? const Color(0xFFFF7643)
-                                    : Colors.grey[200],
-                              ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: AuthButton(
+                                    text: "Auteur",
+                                    onPressed: authProvider.status ==
+                                            AuthStatus.loading
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              _selectedRole =
+                                                  UserModel.ROLE_AUTHOR;
+                                            });
+                                          },
+                                    textStyle: TextStyle(
+                                      color:
+                                          _selectedRole == UserModel.ROLE_AUTHOR
+                                              ? Colors.white
+                                              : const Color(0xFFFF7643),
+                                    ),
+                                    backgroundColor:
+                                        _selectedRole == UserModel.ROLE_AUTHOR
+                                            ? const Color(0xFFFF7643)
+                                            : Colors.grey[200],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -174,8 +218,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         AuthButton(
                           text: authProvider.status == AuthStatus.loading
-                              ? "Registering..."
-                              : "Register",
+                              ? "Inscription en cours..."
+                              : "S'inscrire",
                           onPressed: authProvider.status == AuthStatus.loading
                               ? null
                               : _handleRegister,
@@ -183,10 +227,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
                           },
                           child: const Text(
-                            "Already have an account? Login",
+                            "Déjà un compte ? Connectez-vous",
                             style: TextStyle(
                               color: Color(0xFFFF7643),
                               fontSize: 16,

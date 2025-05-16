@@ -1,3 +1,4 @@
+import 'package:auth_service/auth_service.dart';
 import 'package:biblio_squad/visions/vision_model.dart';
 import 'package:flutter/material.dart';
 import 'vision_card.dart';
@@ -7,11 +8,30 @@ class VisionFeatures extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = AuthService.getCurrentUser(context);
+
     return FutureBuilder<List<VisionFeaturesModel>>(
       future: getVisionFeatures(context),
       builder: (context, snapshot) {
-        // Directly render the grid with available data, default to empty list
-        final features = snapshot.data ?? [];
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final allFeatures = snapshot.data ?? [];
+        final features = allFeatures
+            .where((feature) => feature.hasAccess(currentUser))
+            .toList();
+        if (features.isEmpty) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                "Vous n'avez pas accès aux fonctionnalités. Veuillez contacter un administrateur.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          );
+        }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: GridView.builder(

@@ -5,6 +5,11 @@ class UserModel {
   final String email;
   final String role;
 
+  // Définir des constantes pour les rôles disponibles
+  static const String ROLE_USER = 'user';
+  static const String ROLE_AUTHOR = 'author';
+  static const String ROLE_ADMIN = 'admin';
+
   UserModel({
     required this.uid,
     required this.name,
@@ -31,5 +36,29 @@ class UserModel {
       email: map['email'],
       role: map['role'],
     );
+  }
+
+  bool canAccessBarcodeService() {
+    return role == ROLE_USER || role == ROLE_ADMIN || role == ROLE_AUTHOR;
+  }
+
+  bool canAccessDocumentScanService() {
+    return role == ROLE_ADMIN || role == ROLE_AUTHOR;
+  }
+
+  bool canAccessGestionUsersService() {
+    return role == ROLE_ADMIN;
+  }
+
+  bool canAccessOcrService() {
+    return role == ROLE_USER || role == ROLE_ADMIN || role == ROLE_AUTHOR;
+  }
+
+  bool canAccessTranslationService() {
+    return role == ROLE_USER || role == ROLE_ADMIN || role == ROLE_AUTHOR;
+  }
+
+  bool canAccessSmartReplyService() {
+    return role == ROLE_USER || role == ROLE_ADMIN || role == ROLE_AUTHOR;
   }
 }

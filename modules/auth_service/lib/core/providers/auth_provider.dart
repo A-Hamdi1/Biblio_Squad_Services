@@ -13,10 +13,36 @@ class AuthProvider extends ChangeNotifier {
   AuthStatus _status = AuthStatus.idle;
   String _errorMessage = '';
   UserModel? _currentUser;
+  bool _isInitialized = false;
 
   AuthStatus get status => _status;
   String get errorMessage => _errorMessage;
   UserModel? get currentUser => _currentUser;
+  bool get isAuthenticated => _currentUser != null;
+
+  // Initialiser l'état d'authentification au démarrage de l'application
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+
+    // Vérifier si un utilisateur est déjà connecté
+    final user = _auth.currentUser;
+    if (user != null) {
+      try {
+        final userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          _currentUser = UserModel.fromMap(userDoc.data()!);
+          _status = AuthStatus.success;
+        }
+      } catch (e) {
+        _status = AuthStatus.error;
+        _errorMessage = 'Failed to load user data';
+      }
+    }
+
+    _isInitialized = true;
+    notifyListeners();
+  }
 
   Future<void> login(String email, String password) async {
     _status = AuthStatus.loading;
@@ -62,6 +88,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // Vérifier si le rôle est valide
+      if (role != UserModel.ROLE_USER &&
+          role != UserModel.ROLE_AUTHOR &&
+          role != UserModel.ROLE_ADMIN) {
+        throw Exception('Invalid role');
+      }
+
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
