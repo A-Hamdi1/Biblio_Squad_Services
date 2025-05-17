@@ -1,6 +1,7 @@
 import 'package:biblio_squad/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:gestion_users_service/gestion_users_service.dart';
 import 'package:provider/provider.dart';
 import 'features/auth_wrapper.dart';
 import 'features/global_providers.dart';
@@ -12,6 +13,7 @@ void main() async {
   await Firebase.initializeApp();
   // BarcodeService.initializeService();
   // TranslationService.initializeService();
+  GestionUsersService.initializeService();
   AuthService.initializeService();
   runApp(const BiblioSquadApp());
 }
