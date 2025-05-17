@@ -21,7 +21,7 @@ class CategoryButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
           border: Border.all(
-            color: const Color.fromARGB(255, 84, 180, 189),
+            color: const Color(0xFFFF7643),
             width: 1.0,
           ),
         ),
@@ -32,7 +32,7 @@ class CategoryButton extends StatelessWidget {
               const Icon(
                 Icons.description,
                 size: 80.0,
-                color: Color.fromARGB(255, 84, 180, 189),
+                color: Color(0xFFFF7643),
               ),
               SizedBox(
                 width: 70.0,

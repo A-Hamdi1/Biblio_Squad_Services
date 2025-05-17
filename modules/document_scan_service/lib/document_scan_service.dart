@@ -19,7 +19,6 @@ export 'data/document_local_datasource.dart';
 
 // Export widgets
 export 'ui/widgets/menu_categories.dart';
-export 'ui/widgets/home_header.dart';
 export 'ui/widgets/category_button.dart';
 
 import 'package:flutter/material.dart';
@@ -43,7 +42,7 @@ class DocumentScanService {
 
   static List<SingleChildWidget> getProviders() {
     return [
-      ChangeNotifierProvider(create: (_) => DocumentProvider()),
+      ChangeNotifierProvider(create: (_) => DocumentsProvider()),
     ];
   }
 
@@ -81,7 +80,8 @@ class DocumentScanService {
       );
 
       final documentScanner = DocumentScanner(options: documentOptions);
-      final DocumentScanningResult result = await documentScanner.scanDocument();
+      final DocumentScanningResult result =
+          await documentScanner.scanDocument();
       final images = result.images;
 
       if (images.isNotEmpty && context.mounted) {
@@ -94,7 +94,7 @@ class DocumentScanService {
             ),
           ),
         );
-        Provider.of<DocumentProvider>(context, listen: false).loadDocuments();
+        Provider.of<DocumentsProvider>(context, listen: false).loadDocuments();
       }
     } catch (e) {
       if (context.mounted) {
@@ -125,7 +125,7 @@ class DocumentScanService {
         final inputImage = InputImage.fromFilePath(imagePath);
         final textRecognizer = TextRecognizer();
         final RecognizedText recognizedText =
-        await textRecognizer.processImage(inputImage);
+            await textRecognizer.processImage(inputImage);
         extractedText += '${recognizedText.text}\n';
         textRecognizer.close();
       }
@@ -144,7 +144,8 @@ class DocumentScanService {
 
   static Future<bool> saveDocument(
       BuildContext context, DocumentModel document) async {
-    final documentProvider = Provider.of<DocumentProvider>(context, listen: false);
+    final documentProvider =
+        Provider.of<DocumentsProvider>(context, listen: false);
     final success = await documentProvider.saveDocument(document);
     if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -164,8 +165,10 @@ class DocumentScanService {
     return success;
   }
 
-  static Future<bool> deleteDocument(BuildContext context, int documentId) async {
-    final documentProvider = Provider.of<DocumentProvider>(context, listen: false);
+  static Future<bool> deleteDocument(
+      BuildContext context, int documentId) async {
+    final documentProvider =
+        Provider.of<DocumentsProvider>(context, listen: false);
     final success = await documentProvider.deleteDocument(documentId);
     if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -198,7 +201,8 @@ class DocumentScanService {
     return status.isGranted;
   }
 
-  static void navigateToDetailScreen(BuildContext context, DocumentModel document) {
+  static void navigateToDetailScreen(
+      BuildContext context, DocumentModel document) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -210,7 +214,8 @@ class DocumentScanService {
     );
   }
 
-  static void navigateToEditScreen(BuildContext context, DocumentModel document) {
+  static void navigateToEditScreen(
+      BuildContext context, DocumentModel document) {
     Navigator.push(
       context,
       MaterialPageRoute(

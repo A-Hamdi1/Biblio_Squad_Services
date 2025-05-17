@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_document_scanner/google_mlkit_document_scanner.dart';
+import 'package:ocr_service/ocr_service.dart';
 import 'package:provider/provider.dart';
-import '../../ui/widgets/home_header.dart';
 import '../../../core/providers/document_provider.dart';
 import 'latest_documents_screen.dart';
 import '../widgets/menu_categories.dart';
@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DocumentProvider>().loadDocuments();
+      context.read<DocumentsProvider>().loadDocuments();
     });
   }
 
@@ -27,19 +27,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Consumer<DocumentProvider>(
+        child: Consumer<DocumentsProvider>(
           builder: (context, documentProvider, child) {
             return RefreshIndicator(
               onRefresh: () => documentProvider.loadDocuments(),
               child: Column(
                 children: [
-                  HomeHeader(svgSrc: "packages/document_scan_service/assets/images/arrow_left.svg", press: () {}),
+                  AppHeader(
+                    showBar: true,
+                    onBackPressed: () => Navigator.pop(context),
+                  ),
                   Container(
                     margin: const EdgeInsets.fromLTRB(16.0, 16, 16, 0),
                     width: double.infinity,
                     height: 120,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 84, 180, 189),
+                      color: const Color(0xFFFF7643),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
@@ -60,15 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             minimumSize: const Size(200, 50),
                           ),
                           onPressed: () async {
-                            DocumentScannerOptions documentOptions = DocumentScannerOptions(
+                            DocumentScannerOptions documentOptions =
+                                DocumentScannerOptions(
                               documentFormat: DocumentFormat.jpeg,
                               mode: ScannerMode.filter,
                               pageLimit: 100,
                               isGalleryImport: true,
                             );
 
-                            final documentScanner = DocumentScanner(options: documentOptions);
-                            DocumentScanningResult result = await documentScanner.scanDocument();
+                            final documentScanner =
+                                DocumentScanner(options: documentOptions);
+                            DocumentScanningResult result =
+                                await documentScanner.scanDocument();
                             final images = result.images;
 
                             if (images.isNotEmpty) {
@@ -127,12 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   documentProvider.isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : Expanded(
-                    child: documentProvider.documents.isEmpty
-                        ? const Center(child: Text("No documents found"))
-                        : LatestDocumentsPage(
-                      documents: documentProvider.documents,
-                    ),
-                  ),
+                          child: documentProvider.documents.isEmpty
+                              ? const Center(child: Text("No documents found"))
+                              : LatestDocumentsPage(
+                                  documents: documentProvider.documents,
+                                ),
+                        ),
                 ],
               ),
             );

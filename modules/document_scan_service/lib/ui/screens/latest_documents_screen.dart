@@ -36,9 +36,10 @@ class LatestDocumentsPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => DetailDocumentPage(
-                          document: documents[index],
-                        ))).then((_) {
-                  Provider.of<DocumentProvider>(context, listen: false).loadDocuments();
+                              document: documents[index],
+                            ))).then((_) {
+                  Provider.of<DocumentsProvider>(context, listen: false)
+                      .loadDocuments();
                 });
               },
               child: Column(
@@ -57,7 +58,7 @@ class LatestDocumentsPage extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 colorBlendMode: BlendMode.colorBurn,
-                                color: const Color.fromARGB(255, 84, 180, 189).withOpacity(0.2),
+                                color: const Color(0xFFFF7643),
                               ),
                             ),
                           );
@@ -71,7 +72,7 @@ class LatestDocumentsPage extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12.0,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 84, 180, 189),
+                      color: Color(0xFFFF7643),
                     ),
                   ),
                 ],

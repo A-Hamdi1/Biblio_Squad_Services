@@ -9,7 +9,8 @@ class MenuCategories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final documentProvider = Provider.of<DocumentProvider>(context, listen: false);
+    final documentProvider =
+        Provider.of<DocumentsProvider>(context, listen: false);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -39,8 +40,8 @@ class MenuCategories extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                        const DocumentCategoryPage(categoryTitle: 'Poetry'))).then((_) {
+                        builder: (context) => const DocumentCategoryPage(
+                            categoryTitle: 'Poetry'))).then((_) {
                   // Refresh documents when returning to this screen
                   documentProvider.loadDocuments();
                 });
@@ -54,8 +55,8 @@ class MenuCategories extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                        const DocumentCategoryPage(categoryTitle: 'Novel'))).then((_) {
+                        builder: (context) => const DocumentCategoryPage(
+                            categoryTitle: 'Novel'))).then((_) {
                   documentProvider.loadDocuments();
                 });
               },

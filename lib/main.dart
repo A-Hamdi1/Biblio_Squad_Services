@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'features/auth_wrapper.dart';
 import 'features/global_providers.dart';
-import 'features/home_page.dart';
+import 'pages/home_page.dart';
 import 'package:auth_service/auth_service.dart';
 
 void main() async {

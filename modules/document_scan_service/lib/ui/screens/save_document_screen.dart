@@ -39,7 +39,10 @@ class _SaveDocumentPageState extends State<SaveDocumentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Save Document'),
+        title: const Text(
+          'Save Document',
+          style: TextStyle(fontSize: 17.0),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -82,9 +85,9 @@ class _SaveDocumentPageState extends State<SaveDocumentPage> {
             },
             items: categories
                 .map((e) => DropdownMenuItem<String>(
-              value: e,
-              child: Text(e),
-            ))
+                      value: e,
+                      child: Text(e),
+                    ))
                 .toList(),
             decoration: const InputDecoration(
               labelText: 'Category',
@@ -93,75 +96,74 @@ class _SaveDocumentPageState extends State<SaveDocumentPage> {
           const SizedBox(height: 16.0),
         ],
       ),
-      bottomNavigationBar: Consumer<DocumentProvider>(
+      bottomNavigationBar: Consumer<DocumentsProvider>(
           builder: (context, documentProvider, child) {
-            return InkWell(
-              onTap: () async {
-                // save document
-                try {
-                  if (nameController!.text.isEmpty || selectCategory == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please complete the data'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
-
-                  DocumentModel model = DocumentModel(
-                    name: nameController!.text,
-                    path: widget.pathImage,
-                    category: selectCategory!,
-                    createdAt:
-                    DateFormat('yyyy-MM-ddTHH:mm:ss').format(DateTime.now()),
-                  );
-
-                  final success = await documentProvider.saveDocument(model);
-
-                  if (success && context.mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Saved Document'),
-                        backgroundColor: Color(0xFFFF7643),
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    final snackBar = SnackBar(
-                      content: Text(e.toString()),
-                      backgroundColor: Colors.red,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                }
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 52,
-                margin: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 84, 180, 189),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Center(
-                  child: documentProvider.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                    "Save Document",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffFFFFFF),
-                    ),
+        return InkWell(
+          onTap: () async {
+            // save document
+            try {
+              if (nameController!.text.isEmpty || selectCategory == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please complete the data'),
+                    backgroundColor: Colors.red,
                   ),
-                ),
-              ),
-            );
-          }
-      ),
+                );
+                return;
+              }
+
+              DocumentModel model = DocumentModel(
+                name: nameController!.text,
+                path: widget.pathImage,
+                category: selectCategory!,
+                createdAt:
+                    DateFormat('yyyy-MM-ddTHH:mm:ss').format(DateTime.now()),
+              );
+
+              final success = await documentProvider.saveDocument(model);
+
+              if (success && context.mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Saved Document'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            } catch (e) {
+              if (context.mounted) {
+                final snackBar = SnackBar(
+                  content: Text(e.toString()),
+                  backgroundColor: Colors.red,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            }
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: 52,
+            margin: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF7643),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: documentProvider.isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text(
+                      "Save Document",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xffFFFFFF),
+                      ),
+                    ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }

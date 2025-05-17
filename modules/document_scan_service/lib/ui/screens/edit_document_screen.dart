@@ -69,14 +69,15 @@ class _EditDocumentPageState extends State<EditDocumentPage> {
           createdAt: widget.document.createdAt,
         );
 
-        final success = await Provider.of<DocumentProvider>(context, listen: false)
-            .saveDocument(updatedDocument);
+        final success =
+            await Provider.of<DocumentsProvider>(context, listen: false)
+                .saveDocument(updatedDocument);
 
         if (success && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Document updated successfully'),
-              backgroundColor: Color.fromARGB(255, 84, 180, 189),
+              backgroundColor: Colors.green,
             ),
           );
 
@@ -107,87 +108,85 @@ class _EditDocumentPageState extends State<EditDocumentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Document'),
+        title: const Text(
+          'Edit Document',
+          style: TextStyle(fontSize: 17.0),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _isLoading ? null : _saveDocument,
-            color: const Color.fromARGB(255, 84, 180, 189),
+            color: const Color(0xFFFF7643),
           ),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                initialValue: _name,
-                decoration: const InputDecoration(labelText: 'Document Name'),
-                onSaved: (value) {
-                  _name = value ?? '';
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a document name';
-                  }
-                  return null;
-                },
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    TextFormField(
+                      initialValue: _name,
+                      decoration:
+                          const InputDecoration(labelText: 'Document Name'),
+                      onSaved: (value) {
+                        _name = value ?? '';
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a document name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      initialValue: _category,
+                      decoration: const InputDecoration(labelText: 'Category'),
+                      onSaved: (value) {
+                        _category = value ?? '';
+                      },
+                      enabled: false,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Images'),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8.0,
+                      children: _images.map((imagePath) {
+                        return Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Image.file(
+                              File(imagePath),
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                setState(() {
+                                  _images.remove(imagePath);
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _pickImages,
+                      child: const Text('Scan Document'),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _category,
-                decoration: const InputDecoration(labelText: 'Category'),
-                onSaved: (value) {
-                  _category = value ?? '';
-                },
-              ),
-              const SizedBox(height: 16),
-              const Text('Images'),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8.0,
-                children: _images.map((imagePath) {
-                  return Stack(
-                    alignment: Alignment.topRight,
-                    children: [
-                      Image.file(
-                        File(imagePath),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          setState(() {
-                            _images.remove(imagePath);
-                          });
-                        },
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _pickImages,
-                child: const Text('Scan Document'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _saveDocument,
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Save Document'),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

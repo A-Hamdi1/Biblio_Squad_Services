@@ -16,5 +16,5 @@ class AppColors {
   static const Color error = Colors.red;
   static const Color info = Colors.blueAccent;
 
-  static const Color containerOverlay = Color(0xFFBDBDBD);
+  static const Color containerOverlay = Colors.white;
 }

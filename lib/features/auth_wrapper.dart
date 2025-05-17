@@ -2,7 +2,7 @@ import 'package:auth_service/auth_service.dart';
 import 'package:auth_service/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'home_page.dart';
+import '../pages/home_page.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});

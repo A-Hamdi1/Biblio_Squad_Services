@@ -30,8 +30,9 @@ class _DocumentCategoryPageState extends State<DocumentCategoryPage> {
       isLoading = true;
     });
 
-    final documentProvider = context.read<DocumentProvider>();
-    categoryDocuments = await documentProvider.getDocumentsByCategory(widget.categoryTitle);
+    final documentProvider = context.read<DocumentsProvider>();
+    categoryDocuments =
+        await documentProvider.getDocumentsByCategory(widget.categoryTitle);
 
     if (mounted) {
       setState(() {
@@ -44,7 +45,10 @@ class _DocumentCategoryPageState extends State<DocumentCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Document ${widget.categoryTitle}'),
+        title: Text(
+          'Document ${widget.categoryTitle}',
+          style: TextStyle(fontSize: 17.0),
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: loadCategoryData,
@@ -54,15 +58,16 @@ class _DocumentCategoryPageState extends State<DocumentCategoryPage> {
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : categoryDocuments.isEmpty
-                  ? Center(
-                child: Text(
-                  "${widget.categoryTitle} is empty",
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w200),
-                ),
-              )
-                  : LatestDocumentsPage(
-                documents: categoryDocuments,
-              ),
+                      ? Center(
+                          child: Text(
+                            "${widget.categoryTitle} is empty",
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w200),
+                          ),
+                        )
+                      : LatestDocumentsPage(
+                          documents: categoryDocuments,
+                        ),
             ),
           ],
         ),

@@ -54,7 +54,7 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.green,
-                duration: const Duration(seconds: 5),
+                duration: const Duration(seconds: 2),
               ),
             );
           }
@@ -97,7 +97,7 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
           for (var imagePath in widget.document.path!) {
             final sourceFile = File(imagePath);
             final targetFile =
-            File('${directory.path}/${path.basename(imagePath)}');
+                File('${directory.path}/${path.basename(imagePath)}');
 
             if (!sourceFile.existsSync()) {
               throw Exception('Source file does not exist: $imagePath');
@@ -118,7 +118,7 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.green,
-                duration: const Duration(seconds: 5),
+                duration: const Duration(seconds: 2),
               ),
             );
           }
@@ -166,7 +166,7 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
       final inputImage = InputImage.fromFilePath(imagePath);
       final textRecognizer = TextRecognizer();
       final RecognizedText recognizedText =
-      await textRecognizer.processImage(inputImage);
+          await textRecognizer.processImage(inputImage);
 
       extractedText += '${recognizedText.text}\n';
       textRecognizer.close();
@@ -195,22 +195,26 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Document'),
+        title: const Text(
+          'Detail Document',
+          style: TextStyle(fontSize: 17.0),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.font_download),
             onPressed: _extractTextFromImage,
-            color: const Color.fromARGB(255, 84, 180, 189),
+            color: const Color(0xFF8d99ae),
           ),
           IconButton(
             icon: const Icon(
               Icons.edit,
-              color: Color.fromARGB(255, 84, 180, 189),
+              color: Color(0xFFee964b),
             ),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => EditDocumentPage(document: widget.document),
+                  builder: (context) =>
+                      EditDocumentPage(document: widget.document),
                 ),
               );
             },
@@ -218,7 +222,7 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
           IconButton(
             icon: const Icon(
               Icons.delete,
-              color: Colors.red,
+              color: Color(0xFFf95738),
             ),
             onPressed: () {
               showDialog(
@@ -226,7 +230,8 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text('Confirm Delete'),
-                    content: const Text('Are you sure you want to delete this document?'),
+                    content: const Text(
+                        'Are you sure you want to delete this document?'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
@@ -234,13 +239,14 @@ class _DetailDocumentPageState extends State<DetailDocumentPage> {
                         },
                         child: const Text('Cancel'),
                       ),
-                      Consumer<DocumentProvider>(
+                      Consumer<DocumentsProvider>(
                         builder: (context, documentProvider, child) {
                           return TextButton(
                             onPressed: () async {
                               Navigator.of(context).pop();
 
-                              final success = await documentProvider.deleteDocument(widget.document.id!);
+                              final success = await documentProvider
+                                  .deleteDocument(widget.document.id!);
 
                               if (success && context.mounted) {
                                 Navigator.pushReplacement(

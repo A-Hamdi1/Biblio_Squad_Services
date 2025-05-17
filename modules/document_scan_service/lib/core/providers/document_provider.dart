@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../../models/document_scan_model.dart';
 import '../../data/document_local_datasource.dart';
 
-class DocumentProvider extends ChangeNotifier {
+class DocumentsProvider extends ChangeNotifier {
   List<DocumentModel> _documents = [];
   bool _isLoading = false;
   String? _error;
@@ -26,7 +26,8 @@ class DocumentProvider extends ChangeNotifier {
   Future<List<DocumentModel>> getDocumentsByCategory(String category) async {
     _setLoading(true);
     try {
-      final categoryDocs = await DocumentLocalDatasource.instance.getDocumentByCategory(category);
+      final categoryDocs = await DocumentLocalDatasource.instance
+          .getDocumentByCategory(category);
       _error = null;
       return categoryDocs;
     } catch (e) {
@@ -55,9 +56,11 @@ class DocumentProvider extends ChangeNotifier {
   Future<bool> deleteDocument(int documentId) async {
     _setLoading(true);
     try {
-      final documentToDelete = _documents.firstWhere((doc) => doc.id == documentId);
+      final documentToDelete =
+          _documents.firstWhere((doc) => doc.id == documentId);
 
-      final result = await DocumentLocalDatasource.instance.deleteDocument(documentId);
+      final result =
+          await DocumentLocalDatasource.instance.deleteDocument(documentId);
 
       if (result > 0) {
         _documents.removeWhere((doc) => doc.id == documentId);

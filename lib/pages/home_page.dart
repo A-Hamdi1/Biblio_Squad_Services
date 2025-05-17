@@ -1,7 +1,7 @@
 import 'package:auth_service/auth_service.dart';
-import 'package:document_scan_service/ui/widgets/home_header.dart';
 import 'package:flutter/material.dart';
 import '../visions/vision_features .dart';
+import 'home_header.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

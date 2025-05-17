@@ -52,8 +52,7 @@ class AppHeader extends StatelessWidget {
       onChanged: (value) {},
       decoration: InputDecoration(
         filled: true,
-        fillColor:
-            const Color.fromARGB(255, 186, 182, 182).withValues(alpha: 26),
+        fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         border: specialOutlineInputBorder,
         focusedBorder: specialOutlineInputBorder,
