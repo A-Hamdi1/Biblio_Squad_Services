@@ -17,7 +17,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   void initState() {
     super.initState();
-    _initializeAuth();
+    // _initializeAuth();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeAuth();
+    });
   }
 
   Future<void> _initializeAuth() async {

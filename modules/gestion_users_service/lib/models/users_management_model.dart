@@ -6,7 +6,8 @@ class UsersManagementModel {
 
   Future<List<UserModel>> getAllUsers() async {
     try {
-      final querySnapshot = await _firestore.collection('users').get();
+      final querySnapshot =
+          await _firestore.collection('users').orderBy('name').get();
 
       return querySnapshot.docs
           .map((doc) => UserModel.fromMap(doc.data()))
