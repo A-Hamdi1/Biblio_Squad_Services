@@ -30,6 +30,8 @@ dependencies:
     path: modules/auth_service
   gestion_users_service:
     path: modules/gestion_users_service
+  smart_reply_service:
+    path: modules/smart_reply_service
 
 dev_dependencies:
   flutter_test:

@@ -74,12 +74,14 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "User Details",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFFF7643),
+                        Center(
+                          child: const Text(
+                            "User Details",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFFF7643),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),

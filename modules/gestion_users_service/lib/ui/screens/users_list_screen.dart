@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gestion_users_service/ui/screens/user_details_screen.dart';
-import 'package:ocr_service/ui/components/app_header.dart';
 import 'package:provider/provider.dart';
 import '../widgets/user_list_item.dart';
 import '../../core/providers/users_management_provider.dart';
+import 'package:ocr_service/ui/components/app_header.dart';
+import 'package:gestion_users_service/ui/screens/user_details_screen.dart';
 
 class UsersListScreen extends StatefulWidget {
   const UsersListScreen({super.key});

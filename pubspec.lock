@@ -952,6 +952,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  smart_reply_service:
+    dependency: "direct main"
+    description:
+      path: "modules/smart_reply_service"
+      relative: true
+    source: path
+    version: "0.0.1"
   source_span:
     dependency: transitive
     description:

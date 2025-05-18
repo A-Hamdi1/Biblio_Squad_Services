@@ -8,11 +8,12 @@ class UsersManagementProvider extends ChangeNotifier {
   final UsersManagementModel _model = UsersManagementModel();
 
   List<UserModel> _users = [];
+  List<UserModel> _filteredUsers = [];
   UserModel? _selectedUser;
   UsersManagementStatus _status = UsersManagementStatus.idle;
   String _errorMessage = '';
 
-  List<UserModel> get users => _users;
+  List<UserModel> get users => _filteredUsers;
   UserModel? get selectedUser => _selectedUser;
   UsersManagementStatus get status => _status;
   String get errorMessage => _errorMessage;
@@ -24,6 +25,10 @@ class UsersManagementProvider extends ChangeNotifier {
 
     try {
       _users = await _model.getAllUsers();
+
+      _filteredUsers =
+          _users.where((user) => user.role.toLowerCase() != 'admin').toList();
+
       _status = UsersManagementStatus.success;
     } catch (e) {
       _status = UsersManagementStatus.error;
@@ -58,6 +63,7 @@ class UsersManagementProvider extends ChangeNotifier {
       await _model.deleteUser(uid);
 
       _users.removeWhere((user) => user.uid == uid);
+      _filteredUsers.removeWhere((user) => user.uid == uid);
 
       if (_selectedUser?.uid == uid) {
         _selectedUser = null;
