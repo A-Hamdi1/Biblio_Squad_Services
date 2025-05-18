@@ -5,6 +5,7 @@ import 'package:gestion_users_service/gestion_users_service.dart';
 import 'package:ocr_service/ocr_service.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:translation_service/translation_service.dart';
+// import 'package:smart_reply_service/smart_reply_service.dart';
 
 List<SingleChildWidget> getGlobalProviders() => [
       ...OcrService.getProviders(),
@@ -13,4 +14,5 @@ List<SingleChildWidget> getGlobalProviders() => [
       ...DocumentScanService.getProviders(),
       ...AuthService.getProviders(),
       ...GestionUsersService.getProviders(),
+      // ...SmartReplyService.getProviders(),
     ];

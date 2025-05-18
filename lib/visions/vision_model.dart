@@ -3,8 +3,11 @@ import 'package:barcode_service/barcode_service.dart';
 import 'package:document_scan_service/document_scan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:ocr_service/ocr_service.dart';
+// import 'package:smart_reply_service/smart_reply_service.dart';
 import 'package:translation_service/translation_service.dart';
 import 'package:gestion_users_service/gestion_users_service.dart';
+
+import '../features/smart_reply_bot.dart';
 
 class VisionFeaturesModel {
   final String title;
@@ -89,12 +92,10 @@ Future<List<VisionFeaturesModel>> getVisionFeatures(
       onPress: (context) {
         final user = AuthService.getCurrentUser(context);
         if (user != null && user.canAccessSmartReplyService()) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Fonctionnalité en cours de développement.'),
-              backgroundColor: Colors.orange,
-              duration: Duration(seconds: 2),
-            ),
+          // SmartReplyService.navigateToHomeScreen(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SmartReplyBotScreen()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

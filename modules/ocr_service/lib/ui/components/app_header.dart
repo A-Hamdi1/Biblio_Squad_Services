@@ -38,11 +38,7 @@ class AppHeader extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         height: 46,
         width: 46,
-        decoration: BoxDecoration(
-          color: AppColors.containerOverlay,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(Icons.arrow_back, color: AppColors.text),
+        child: const Icon(Icons.arrow_back, color: Colors.black),
       ),
     );
   }
@@ -57,7 +53,7 @@ class AppHeader extends StatelessWidget {
         border: specialOutlineInputBorder,
         focusedBorder: specialOutlineInputBorder,
         enabledBorder: specialOutlineInputBorder,
-        hintText: "OCR Service",
+        hintText: "Biblio Squad",
         prefixIcon: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset("assets/images/logo.png", width: 24, height: 24),

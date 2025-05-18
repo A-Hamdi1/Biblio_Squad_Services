@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class AppHeader extends StatelessWidget {
   final VoidCallback? onBackPressed;
   final bool showBar;
+  final List<Widget>? actions;
 
   const AppHeader({
     super.key,
     this.onBackPressed,
     this.showBar = true,
+    this.actions,
   });
 
   @override
@@ -24,6 +26,15 @@ class AppHeader extends StatelessWidget {
 
           // Search bar
           if (showBar) Expanded(child: _buildSpecialField()),
+
+          // Actions
+          if (actions != null && actions!.isNotEmpty)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: actions!,
+            )
+          else
+            const SizedBox(width: 2),
         ],
       ),
     );
@@ -37,10 +48,6 @@ class AppHeader extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         height: 46,
         width: 46,
-        decoration: BoxDecoration(
-          color: Color(0xFFBDBDBD),
-          shape: BoxShape.circle,
-        ),
         child: const Icon(Icons.arrow_back, color: Colors.black),
       ),
     );

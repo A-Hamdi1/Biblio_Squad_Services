@@ -36,10 +36,6 @@ class AppHeader extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         height: 46,
         width: 46,
-        decoration: BoxDecoration(
-          color: Color(0xFFBDBDBD),
-          shape: BoxShape.circle,
-        ),
         child: const Icon(Icons.arrow_back, color: Colors.black),
       ),
     );
